@@ -18,10 +18,9 @@ export const StyledDashboardComponent = styled(ImageListItem)(({ theme }) => ({
   borderRadius: '12px',
   border: '1px solid',
   borderColor: 'rgba(0, 0, 0, 0.05)',
-  overflow: 'hidden', // Adiciona overflow hidden para que o conteúdo não saia do componente
+  overflow: 'hidden', 
 
   '&:hover': {
-    // Torna o botão visível ao passar o mouse sobre o componente
     '& .fullscreen-button': {
       opacity: 1,
     },

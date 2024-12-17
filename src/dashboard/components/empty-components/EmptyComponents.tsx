@@ -1,9 +1,13 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Button, Typography, useTheme } from "@mui/material";
 import { EmptyContainer } from "./styles"
 
 import InsertChartIcon from '@mui/icons-material/InsertChart';
 
-export const EmptyComponents = () => {
+type Props = {
+  handleChangeOpenAddComponentModal: (newValue: boolean) => void
+}
+
+export const EmptyComponents = ({ handleChangeOpenAddComponentModal }: Props) => {
   const theme = useTheme()
   return (
     <EmptyContainer>
@@ -19,12 +23,15 @@ export const EmptyComponents = () => {
           Ainda não há componentes neste dashboard
         </Typography>
 
-        <Typography
-          textAlign='center'
-          variant="caption"
+        <Button
+          size="small"
+          variant="text"
+          onClick={() => handleChangeOpenAddComponentModal(true)}
         >
-          <a href="">Clique aqui para adicionar um componente</a>
-        </Typography>
+          <Typography
+            variant="caption"
+          >Clique aqui para adicionar um componente</Typography>
+        </Button>
       </Box>
     </EmptyContainer>
   )

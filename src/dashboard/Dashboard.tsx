@@ -7,39 +7,42 @@ import NorthIcon from '@mui/icons-material/North';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import AddchartIcon from '@mui/icons-material/Addchart';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
+import CloseIcon from '@mui/icons-material/Close';
 
 import { DemensionsButtons } from "./components/demensions-buttons/DemensionsButtons";
 import { IDashboard } from "../dtos/dashboard";
 import { EmptyComponents } from "./components/empty-components/EmptyComponents";
+import { ModalFullScreen } from "./components/modal-full-screen/ModalFullScreen";
+import { ModalAddComponent } from "./components/modal-add-component/ModalAddComponent";
 
 const dashboardData: IDashboard[] = [
   {
     id: 1,
-    width: 6,
-    height: 2,
+    width: 2,
+    height: 1,
     content: <Typography>teste1</Typography>,
   },
   {
     id: 2,
-    width: 6,
+    width: 4,
     height: 1,
     content: <Typography>teste2</Typography>,
   },
   {
     id: 3,
-    width: 6,
+    width: 1,
     height: 1,
     content: <Typography>teste3</Typography>,
   },
   {
     id: 4,
-    width: 6,
+    width: 3,
     height: 1,
     content: <Typography>teste4</Typography>,
   },
   {
     id: 5,
-    width: 6,
+    width: 2,
     height: 1,
     content: <Typography>teste5</Typography>,
   },
@@ -61,6 +64,16 @@ enum rollUpColors {
 
 export const Dashboard = () => {
   const theme = useTheme()
+
+  const [openAddComponentModal, setOpenAddComponentModal] = useState(false)
+  const handleChangeOpenAddComponentModal = (newValue: boolean) => {
+    setOpenAddComponentModal(newValue)
+  }
+
+  const [openFullScreenModal, setOpenFullScreenModal] = useState<number | undefined>(undefined)
+  const handleChangeOpenFullScreenModal = (newValue: number | undefined) => {
+    setOpenFullScreenModal(newValue)
+  }
 
   const [dashboard, setDashboard] = useState<IDashboard[]>(dashboardData)
   const handleChangeDashboard = (updateFn: (prevRows: IDashboard[]) => IDashboard[]) => {
@@ -107,8 +120,16 @@ export const Dashboard = () => {
   }, [isRollUpButtonVisible])
 
   const speedDialActions = [
-    { icon: <TransformIcon />, name: 'Editar dimensões', onClick: () => handleChangeDimensionsMode() },
-    { icon: <AddchartIcon />, name: 'Adicionar componente', onClick: () => console.log('Adicionar componente') },
+    {
+      icon: dimensionsMode ? <CloseIcon /> : <TransformIcon />,
+      name: dimensionsMode ? 'Sair da edição de dimensões' : 'Editar dimensões',
+      onClick: () => handleChangeDimensionsMode()
+    },
+    {
+      icon: <AddchartIcon />,
+      name: 'Adicionar componente',
+      onClick: () => handleChangeOpenAddComponentModal(true)
+    },
   ];
 
   return (
@@ -152,12 +173,22 @@ export const Dashboard = () => {
               {component.content}
 
               {!dimensionsMode && (
-                <FullScreenButton
-                  size="small"
-                  className="fullscreen-button"
-                >
-                  <FullscreenIcon fontSize="small" />
-                </FullScreenButton>
+                <>
+                  <FullScreenButton
+                    size="small"
+                    className="fullscreen-button"
+                    onClick={() => setOpenFullScreenModal(component.id)}
+                  >
+                    <FullscreenIcon fontSize="small" />
+                  </FullScreenButton>
+
+                  <ModalFullScreen
+                    open={component.id === openFullScreenModal}
+                    handleChangeOpen={handleChangeOpenFullScreenModal}
+                    component={component}
+                  />
+                </>
+
               )}
 
               {dimensionsMode && <DemensionsButtons component={component} handleChangeDashboard={handleChangeDashboard} />}
@@ -165,7 +196,7 @@ export const Dashboard = () => {
           ))}
         </DashboardContainer>
       ) : (
-        <EmptyComponents />
+        <EmptyComponents handleChangeOpenAddComponentModal={handleChangeOpenAddComponentModal} />
       )}
 
       <ActionsSpeedDial
@@ -183,6 +214,11 @@ export const Dashboard = () => {
           />
         ))}
       </ActionsSpeedDial>
+
+      <ModalAddComponent
+        open={openAddComponentModal}
+        handleChangeOpen={handleChangeOpenAddComponentModal}
+      />
 
       {isRollUpButtonVisible && (
         <Tooltip title='Voltar para o topo' placement='top-start'>

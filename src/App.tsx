@@ -3,7 +3,9 @@ import './global.css'
 
 function App() {
   return (
-    <Dashboard />
+    <>
+      <Dashboard />
+    </>
   )
 }
 
