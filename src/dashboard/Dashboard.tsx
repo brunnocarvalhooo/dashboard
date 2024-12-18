@@ -1,58 +1,21 @@
-import { StyledDashboardComponent, DashboardContainer, Container, RollUpButton, slideInUp, slideOutDown, ActionsSpeedDial, HeaderContainer, MenuButton, FullScreenButton } from "./styles";
+import { StyledDashboardComponent, DashboardContainer, Container, RollUpButton, slideInUp, slideOutDown, ActionsSpeedDial, HeaderContainer, FullScreenButton } from "./styles";
 import { SpeedDialAction, SpeedDialIcon, Tooltip, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 
 import TransformIcon from '@mui/icons-material/Transform';
 import NorthIcon from '@mui/icons-material/North';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import AddchartIcon from '@mui/icons-material/Addchart';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import CloseIcon from '@mui/icons-material/Close';
+import MenuIcon from '@mui/icons-material/Menu';
 
 import { DemensionsButtons } from "./components/demensions-buttons/DemensionsButtons";
-import { IDashboard } from "../dtos/dashboard";
 import { EmptyComponents } from "./components/empty-components/EmptyComponents";
 import { ModalFullScreen } from "./components/modal-full-screen/ModalFullScreen";
 import { ModalAddComponent } from "./components/modal-add-component/ModalAddComponent";
-
-const dashboardData: IDashboard[] = [
-  {
-    id: 1,
-    width: 2,
-    height: 1,
-    content: <Typography>teste1</Typography>,
-  },
-  {
-    id: 2,
-    width: 4,
-    height: 1,
-    content: <Typography>teste2</Typography>,
-  },
-  {
-    id: 3,
-    width: 1,
-    height: 1,
-    content: <Typography>teste3</Typography>,
-  },
-  {
-    id: 4,
-    width: 3,
-    height: 1,
-    content: <Typography>teste4</Typography>,
-  },
-  {
-    id: 5,
-    width: 2,
-    height: 1,
-    content: <Typography>teste5</Typography>,
-  },
-  {
-    id: 6,
-    width: 6,
-    height: 1,
-    content: <Typography>teste5</Typography>,
-  },
-];
+import { useDrawer } from "../shared/contexts/drawer";
+import { VIconButton } from "../shared/components";
+import { useDashboards } from "../shared/contexts/dashboards";
 
 enum rollUpColors {
   BLUE = '#0597F2',
@@ -65,6 +28,10 @@ enum rollUpColors {
 export const Dashboard = () => {
   const theme = useTheme()
 
+  const { isDrawerOpen, toggleDrawerOpen } = useDrawer()
+
+  const { dashboards } = useDashboards()
+
   const [openAddComponentModal, setOpenAddComponentModal] = useState(false)
   const handleChangeOpenAddComponentModal = (newValue: boolean) => {
     setOpenAddComponentModal(newValue)
@@ -75,16 +42,6 @@ export const Dashboard = () => {
     setOpenFullScreenModal(newValue)
   }
 
-  const [dashboard, setDashboard] = useState<IDashboard[]>(dashboardData)
-  const handleChangeDashboard = (updateFn: (prevRows: IDashboard[]) => IDashboard[]) => {
-    setDashboard((prev) => {
-      const updatedReserves = updateFn(prev)
-      return prev === updatedReserves
-        ? prev
-        : updatedReserves
-    })
-  }
-
   const [dimensionsMode, setDimensionsMode] = useState(false)
   const handleChangeDimensionsMode = () => {
     setDimensionsMode((prev) => !prev)
@@ -92,6 +49,8 @@ export const Dashboard = () => {
 
   const [isRollUpButtonVisible, setIsRollUpButtonVisible] = useState(false)
   const [rollUpColor, setRollUpColor] = useState<string>(rollUpColors.BLUE)
+
+  console.log(isRollUpButtonVisible)
 
   const handleScrollToTop = () => {
     window.scrollTo({
@@ -136,23 +95,21 @@ export const Dashboard = () => {
     <Container>
       <HeaderContainer>
         <Tooltip title='Menu' placement='bottom-start'>
-          <MenuButton>
-            <ArrowForwardIosIcon />
-          </MenuButton>
+          <VIconButton onClick={() => toggleDrawerOpen(!isDrawerOpen)} size='small' icon={<MenuIcon />} />
         </Tooltip>
 
-        <Typography variant="h4" fontWeight='bold' noWrap>
+        <Typography variant="h5" fontWeight='bold' noWrap color="text.primary">
           Teste de titulo de DASHBOARD
         </Typography>
       </HeaderContainer>
 
-      {dashboard.length > 0 ? (
+      {dashboards.length > 0 ? (
         <DashboardContainer
           variant="quilted"
           cols={6}
           rowHeight={window.innerHeight / 100 * 30} /* 30vh */
         >
-          {dashboard.map((component, i) => (
+          {dashboards.map((component, i) => (
             <StyledDashboardComponent
               key={i}
               cols={component.width}
@@ -165,7 +122,7 @@ export const Dashboard = () => {
                   left: 0,
                   right: 0,
                   bottom: 0,
-                  backgroundColor: `${theme.palette.grey[100]}95`,
+                  backgroundColor: `${theme.palette.background.paper}95`,
                   zIndex: 3,
                 },
               } : undefined}
@@ -188,10 +145,9 @@ export const Dashboard = () => {
                     component={component}
                   />
                 </>
-
               )}
 
-              {dimensionsMode && <DemensionsButtons component={component} handleChangeDashboard={handleChangeDashboard} />}
+              {dimensionsMode && <DemensionsButtons component={component} />}
             </StyledDashboardComponent>
           ))}
         </DashboardContainer>
@@ -202,7 +158,7 @@ export const Dashboard = () => {
       <ActionsSpeedDial
         ariaLabel="Dashboard actions SpeedDial "
         direction="down"
-        sx={{ position: 'fixed', top: '20px', right: '20px' }}
+        sx={{ position: 'fixed', top: '12px', right: '30px' }}
         icon={<SpeedDialIcon />}
       >
         {speedDialActions.map((action) => (
@@ -233,9 +189,8 @@ export const Dashboard = () => {
                 background: rollUpColor
               }
             }}
-          >
-            <NorthIcon />
-          </RollUpButton>
+            icon={<NorthIcon />}
+          />
         </Tooltip>
       )}
     </Container>

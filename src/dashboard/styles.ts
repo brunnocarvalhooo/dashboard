@@ -1,8 +1,10 @@
 import { Box, IconButton, ImageList, ImageListItem, keyframes, SpeedDial, styled } from "@mui/material";
+import { VIconButton } from "../shared/components";
 
 export const Container = styled(Box)(() => ({
   paddingBlock: '80px',
   paddingInline: '4px',
+  position: 'relative'
 }))
 
 export const DashboardContainer = styled(ImageList)(() => ({
@@ -10,7 +12,7 @@ export const DashboardContainer = styled(ImageList)(() => ({
 }))
 
 export const StyledDashboardComponent = styled(ImageListItem)(({ theme }) => ({
-  background: theme.palette.grey[100],
+  background: theme.palette.background.paper,
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -18,7 +20,7 @@ export const StyledDashboardComponent = styled(ImageListItem)(({ theme }) => ({
   borderRadius: '12px',
   border: '1px solid',
   borderColor: 'rgba(0, 0, 0, 0.05)',
-  overflow: 'hidden', 
+  overflow: 'hidden',
 
   '&:hover': {
     '& .fullscreen-button': {
@@ -30,6 +32,7 @@ export const StyledDashboardComponent = styled(ImageListItem)(({ theme }) => ({
     borderRadius: '12px',
   }
 }));
+
 export const DimensionModeButton = styled(IconButton)(({ theme }) => ({
   position: 'fixed',
   top: '20px',
@@ -66,7 +69,7 @@ export const slideOutDown = keyframes`
   }
 `
 
-export const RollUpButton = styled(IconButton)(() => ({
+export const RollUpButton = styled(VIconButton)(() => ({
   position: 'fixed',
   bottom: '20px',
   right: '20px',
@@ -75,9 +78,12 @@ export const RollUpButton = styled(IconButton)(() => ({
 }))
 
 export const ActionsSpeedDial = styled(SpeedDial)(() => ({
+  zIndex: 99,
+
   '& .MuiSpeedDial-fab': {
-    width: '42px',
-    height: '42px',
+    color: 'white',
+    // width: '34px',
+    // height: '34px',
     boxShadow: 'none'
   },
 
@@ -86,32 +92,23 @@ export const ActionsSpeedDial = styled(SpeedDial)(() => ({
   },
 }))
 
-export const MenuButton = styled(IconButton)(({ theme }) => ({
-  background: theme.palette.primary.main,
-  color: 'white',
-
-  '&:hover': {
-    background: theme.palette.primary.dark
-  }
-}))
-
 export const HeaderContainer = styled(Box)(() => ({
   width: 'calc(100vw - 100px)',
-  height: '80px',
+  height: '60px',
   position: 'absolute',
   top: 0,
   left: 0,
   display: 'flex',
   alignItems: 'center',
   gap: '16px',
-  paddingLeft: '24px',
+  paddingLeft: '16px',
 }))
 
 export const FullScreenButton = styled(IconButton)(() => ({
   position: 'absolute',
-  top: '4px', 
-  left: '4px', 
-  opacity: 0, 
-  zIndex: 2, 
-  transition: 'opacity 0.3s ease', 
+  top: '4px',
+  left: '4px',
+  opacity: 0,
+  zIndex: 2,
+  transition: 'opacity 0.3s ease',
 }));

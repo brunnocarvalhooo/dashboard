@@ -27,7 +27,8 @@ export const ModalAddComponent = ({ open, handleChangeOpen }: Props) => {
         <Typography
           variant="h4"
           fontWeight='bold'
-        >Adionar componente</Typography>
+          color="text.primary"
+        >Adicionar componente</Typography>
 
         <CloseModalButton onClick={handleClose}>
           <CloseIcon />

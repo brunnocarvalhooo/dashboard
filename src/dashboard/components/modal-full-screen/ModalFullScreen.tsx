@@ -2,7 +2,7 @@ import { Box } from '@mui/material'
 
 import CloseIcon from '@mui/icons-material/Close';
 
-import { IDashboard } from '../../../dtos/dashboard'
+import { IDashboard } from '../../../shared/dtos/dashboard'
 import { CloseModalButton, StyledDialog, StyledDialogContent } from './styles'
 import { SlideUpTransition } from '../../../shared/styles/transitions';
 

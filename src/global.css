@@ -4,13 +4,10 @@
   box-sizing: border-box;
 }
 
-/* Corpo da página */
 body {
   font-family: 'Arial', 'Helvetica', sans-serif;
   font-size: 16px;
   line-height: 1.5;
-  color: #333; /* Cor padrão para texto */
-  background-color: #EEEEEE; /* Cor de fundo suave */
-  -webkit-font-smoothing: antialiased; /* Suaviza fontes no macOS e iOS */
-  -moz-osx-font-smoothing: grayscale; /* Suaviza fontes no macOS */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale; 
 }

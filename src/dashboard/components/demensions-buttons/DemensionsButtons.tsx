@@ -2,16 +2,18 @@ import { DimensionButton, DimensionsButtonsContainer, rotateStyle } from "./styl
 
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
-import { IDashboard } from "../../../dtos/dashboard";
+import { IDashboard } from "../../../shared/dtos/dashboard";
+import { useDashboards } from "../../../shared/contexts/dashboards";
 
 type Props = {
   component: IDashboard
-  handleChangeDashboard: (updateFn: (prevRows: IDashboard[]) => IDashboard[]) => void
 }
 
-export const DemensionsButtons = ({ component, handleChangeDashboard }: Props) => {
+export const DemensionsButtons = ({ component }: Props) => {
+  const { handleChangeDashboards } = useDashboards()
+
   const handleChangeDimension = (orientation: 'bottom' | 'right', action: '+' | '-') => {
-    handleChangeDashboard((prev) =>
+    handleChangeDashboards((prev) =>
       prev.map((prevComponent) => {
         if (prevComponent.id !== component.id) return prevComponent;
 
@@ -21,15 +23,15 @@ export const DemensionsButtons = ({ component, handleChangeDashboard }: Props) =
           case 'bottom':
             updatedComponent.height =
               action === '+'
-                ? Math.min(updatedComponent.height + 1, 4) 
-                : Math.max(updatedComponent.height - 1, 1); 
+                ? Math.min(updatedComponent.height + 1, 4)
+                : Math.max(updatedComponent.height - 1, 1);
             break;
 
           case 'right':
             updatedComponent.width =
               action === '+'
-                ? Math.min(updatedComponent.width + 1, 12) 
-                : Math.max(updatedComponent.width - 1, 1); 
+                ? Math.min(updatedComponent.width + 1, 12)
+                : Math.max(updatedComponent.width - 1, 1);
             break;
 
           default:
