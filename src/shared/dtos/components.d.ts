@@ -1,4 +1,4 @@
-import { ICategorie } from "./categories"
+import { ICategory } from "./categories"
 
 export interface IComponentContent {
   key: string,
@@ -6,9 +6,10 @@ export interface IComponentContent {
 }
 
 export interface IComponent {
+  id: number
   title?: string,
   width: number
   height: number
-  categorie: ICategorie
+  categories: ICategory[]
   content: IDashboardComponentContent,
 }

@@ -2,43 +2,53 @@ import { DimensionButton, DimensionsButtonsContainer, rotateStyle } from "./styl
 
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
-import { IDashboard } from "../../../shared/dtos/dashboard";
 import { useDashboards } from "../../../shared/contexts/dashboards";
+import { IComponent } from "../../../shared/dtos/components";
+import { IDashboard } from "../../../shared/dtos/dashboard";
 
 type Props = {
-  component: IDashboard
+  component: IComponent
+  dashboard: IDashboard
 }
 
-export const DemensionsButtons = ({ component }: Props) => {
+export const DemensionsButtons = ({ dashboard, component }: Props) => {
   const { handleChangeDashboards } = useDashboards()
 
-  const handleChangeDimension = (orientation: 'bottom' | 'right', action: '+' | '-') => {
+  const handleChangeDimension = (
+    orientation: 'bottom' | 'right',
+    action: '+' | '-'
+  ) => {
+    const MAX_DIMENSIONS = { bottom: 4, right: 12 };
+    const MIN_DIMENSION = 1;
+
     handleChangeDashboards((prev) =>
-      prev.map((prevComponent) => {
-        if (prevComponent.id !== component.id) return prevComponent;
+      prev.map((prevDashboard) => {
+        console.log(prevDashboard.id, dashboard.id)
+        if (prevDashboard.id !== dashboard.id) return prevDashboard;
 
-        const updatedComponent = { ...prevComponent };
+        const updatedDashboard = { ...prevDashboard };
 
-        switch (orientation) {
-          case 'bottom':
-            updatedComponent.height =
-              action === '+'
-                ? Math.min(updatedComponent.height + 1, 4)
-                : Math.max(updatedComponent.height - 1, 1);
-            break;
+        const componentIndex = updatedDashboard.components.findIndex(
+          (comp) => comp.id === component.id
+        );
 
-          case 'right':
-            updatedComponent.width =
-              action === '+'
-                ? Math.min(updatedComponent.width + 1, 12)
-                : Math.max(updatedComponent.width - 1, 1);
-            break;
+        if (componentIndex !== -1) {
+          const updatedComponent = {
+            ...updatedDashboard.components[componentIndex],
+          };
 
-          default:
-            console.warn('Orientação inválida');
+          const dimensionKey = orientation === 'bottom' ? 'height' : 'width';
+          const maxLimit = MAX_DIMENSIONS[orientation];
+
+          updatedComponent[dimensionKey] =
+            action === '+'
+              ? Math.min(updatedComponent[dimensionKey] + 1, maxLimit)
+              : Math.max(updatedComponent[dimensionKey] - 1, MIN_DIMENSION);
+
+          updatedDashboard.components[componentIndex] = updatedComponent;
         }
 
-        return updatedComponent;
+        return updatedDashboard;
       })
     );
   };
@@ -60,7 +70,7 @@ export const DemensionsButtons = ({ component }: Props) => {
           disabled={component.width === 12}
           onClick={() => handleChangeDimension('right', '+')}
         >
-          <AddIcon sx={{ ...rotateStyle }} />
+          <AddIcon sx={{ ...rotateStyle }} fontSize="small" />
         </DimensionButton>
 
         <DimensionButton
@@ -71,31 +81,31 @@ export const DemensionsButtons = ({ component }: Props) => {
           disabled={component.width === 1}
           onClick={() => handleChangeDimension('right', '-')}
         >
-          <RemoveIcon sx={{ ...rotateStyle }} />
+          <RemoveIcon sx={{ ...rotateStyle }} fontSize="small" />
         </DimensionButton>
       </DimensionsButtonsContainer>
 
       <DimensionsButtonsContainer sx={{ bottom: '8px' }}>
         <DimensionButton
           disableElevation
-          variant="contained"
+          variant="outlined"
           size="small"
           color="secondary"
           disabled={component.height === 4}
           onClick={() => handleChangeDimension('bottom', '+')}
         >
-          <AddIcon />
+          <AddIcon fontSize="small" />
         </DimensionButton>
 
         <DimensionButton
           disableElevation
-          variant="contained"
+          variant="outlined"
           size="small"
           color="secondary"
           disabled={component.height === 1}
           onClick={() => handleChangeDimension('bottom', '-')}
         >
-          <RemoveIcon />
+          <RemoveIcon fontSize="small" />
         </DimensionButton>
       </DimensionsButtonsContainer>
     </>

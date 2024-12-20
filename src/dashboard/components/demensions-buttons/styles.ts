@@ -1,4 +1,5 @@
 import { Box, Button, styled } from "@mui/material";
+import { borderColor } from "../../../shared/components/interface/dialog/styles";
 
 export const rotateStyle = {
   writingMode: 'vertical-lr',
@@ -12,7 +13,9 @@ export const DimensionsButtonsContainer = styled(Box)(() => ({
   gap: '8px'
 }))
 
-export const DimensionButton = styled(Button)(() => ({
-  height: '26px',
-  minWidth: '32px'
+export const DimensionButton = styled(Button)(({ theme }) => ({
+  height: '22px',
+  minWidth: '32px',
+  borderColor: borderColor(theme.palette.mode),
+  color: 'white'
 }))

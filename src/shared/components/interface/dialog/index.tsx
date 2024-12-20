@@ -1,11 +1,10 @@
 import {
   Dialog,
   DialogProps,
-  useMediaQuery,
   useTheme,
 } from '@mui/material'
 import React from 'react'
-import { StyledDialogActions, StyledDialogContent, StyledDialogTitle } from './styles'
+import { borderColor, StyledDialogActions, StyledDialogContent, StyledDialogTitle } from './styles'
 import { CloseIconButton } from '../icon-button/CloseIconButton'
 import { SlideUpTransition } from '../../../styles/transitions'
 
@@ -27,7 +26,6 @@ export const VDialog = ({
   ...rest
 }: Props) => {
   const theme = useTheme()
-  const smDown = useMediaQuery(theme.breakpoints.down('sm'))
 
   return (
     <Dialog
@@ -35,10 +33,11 @@ export const VDialog = ({
       open={open}
       onClose={handleClose}
       TransitionComponent={SlideUpTransition}
-      fullScreen={smDown}
+      hideBackdrop
       sx={{
         '& .MuiDialog-paper': {
           borderRadius: '12px',
+          boxShadow: 'none'
         },
       }}
     >
@@ -55,6 +54,7 @@ export const VDialog = ({
           p: actions ? '0px 16px' : summary ? '0px 16px' : '16px',
           borderTop: summary ? undefined : '1px solid',
           borderBottom: actions ? undefined : '1px solid',
+          borderColor: borderColor(theme.palette.mode),
           borderRadius: actions
             ? summary
               ? undefined

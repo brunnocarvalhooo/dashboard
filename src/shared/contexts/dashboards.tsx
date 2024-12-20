@@ -4,6 +4,8 @@ import { IDashboard } from "../dtos/dashboard"
 export interface IDashboardsContextData {
   dashboards: IDashboard[]
   handleChangeDashboards: (updateFn: (prevRows: IDashboard[]) => IDashboard[]) => void
+
+  currentDashboard: IDashboard
 }
 
 export const DashboardsContext = createContext({} as IDashboardsContextData)

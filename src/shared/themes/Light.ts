@@ -3,8 +3,12 @@ import { createTheme } from '@mui/material'
 export const LightTheme = createTheme({
   palette: {
     mode: 'light',
+    primary: {
+      main: '#04D924',
+      contrastText: '#666'
+    },
     text: {
-      primary: '#333',
+      primary: '#000',
       secondary: '#666',
     },
     background: {
@@ -15,7 +19,7 @@ export const LightTheme = createTheme({
   typography: {
     fontFamily: 'Roboto, Arial, sans-serif',
     allVariants: {
-      color: '#333',
+      color: '#000',
     },
   },
 })

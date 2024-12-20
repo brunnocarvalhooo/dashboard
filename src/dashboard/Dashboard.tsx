@@ -1,5 +1,5 @@
-import { StyledDashboardComponent, DashboardContainer, Container, RollUpButton, slideInUp, slideOutDown, ActionsSpeedDial, HeaderContainer, FullScreenButton } from "./styles";
-import { SpeedDialAction, SpeedDialIcon, Tooltip, Typography, useTheme } from "@mui/material";
+import { StyledDashboardComponent, DashboardContainer, Container, RollUpButton, slideInUp, slideOutDown, ActionsSpeedDial, HeaderContainer, FullScreenButton, CategoriesContainer } from "./styles";
+import { Chip, SpeedDialAction, SpeedDialIcon, Tooltip, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 
 import TransformIcon from '@mui/icons-material/Transform';
@@ -16,6 +16,7 @@ import { ModalAddComponent } from "./components/modal-add-component/ModalAddComp
 import { useDrawer } from "../shared/contexts/drawer";
 import { VIconButton } from "../shared/components";
 import { useDashboards } from "../shared/contexts/dashboards";
+import { IDashboard } from "../shared/dtos/dashboard";
 
 enum rollUpColors {
   BLUE = '#0597F2',
@@ -31,6 +32,8 @@ export const Dashboard = () => {
   const { isDrawerOpen, toggleDrawerOpen } = useDrawer()
 
   const { dashboards } = useDashboards()
+
+  const [currentDashboard, setCurrentDashboard] = useState<IDashboard>(dashboards[0])
 
   const [openAddComponentModal, setOpenAddComponentModal] = useState(false)
   const handleChangeOpenAddComponentModal = (newValue: boolean) => {
@@ -80,12 +83,12 @@ export const Dashboard = () => {
 
   const speedDialActions = [
     {
-      icon: dimensionsMode ? <CloseIcon /> : <TransformIcon />,
+      icon: dimensionsMode ? <CloseIcon fontSize="small" /> : <TransformIcon fontSize="small" />,
       name: dimensionsMode ? 'Sair da edição de dimensões' : 'Editar dimensões',
       onClick: () => handleChangeDimensionsMode()
     },
     {
-      icon: <AddchartIcon />,
+      icon: <AddchartIcon fontSize="small" />,
       name: 'Adicionar componente',
       onClick: () => handleChangeOpenAddComponentModal(true)
     },
@@ -98,18 +101,29 @@ export const Dashboard = () => {
           <VIconButton onClick={() => toggleDrawerOpen(!isDrawerOpen)} size='small' icon={<MenuIcon />} />
         </Tooltip>
 
-        <Typography variant="h5" fontWeight='bold' noWrap color="text.primary">
+        <Typography noWrap color="text.primary">
           Teste de titulo de DASHBOARD
         </Typography>
       </HeaderContainer>
 
-      {dashboards.length > 0 ? (
+      <CategoriesContainer>
+        <Chip label={<Typography variant="caption">teste</Typography>} size="small" />
+        <Chip label={<Typography variant="caption">teste</Typography>} size="small" />
+        <Chip label={<Typography variant="caption">teste</Typography>} size="small" />
+        <Chip label={<Typography variant="caption">teste</Typography>} size="small" />
+        <Chip label={<Typography variant="caption">teste</Typography>} size="small" />
+        <Chip label={<Typography variant="caption">teste</Typography>} size="small" />
+        <Chip label={<Typography variant="caption">teste</Typography>} size="small" />
+        <Chip label={<Typography variant="caption">teste</Typography>} size="small" />
+      </CategoriesContainer>
+
+      {currentDashboard.components.length > 0 ? (
         <DashboardContainer
           variant="quilted"
           cols={6}
           rowHeight={window.innerHeight / 100 * 30} /* 30vh */
         >
-          {dashboards.map((component, i) => (
+          {currentDashboard.components.map((component, i) => (
             <StyledDashboardComponent
               key={i}
               cols={component.width}
@@ -127,7 +141,7 @@ export const Dashboard = () => {
                 },
               } : undefined}
             >
-              {component.content}
+              {/* {component.content} */}
 
               {!dimensionsMode && (
                 <>
@@ -147,7 +161,7 @@ export const Dashboard = () => {
                 </>
               )}
 
-              {dimensionsMode && <DemensionsButtons component={component} />}
+              {dimensionsMode && <DemensionsButtons component={component} dashboard={currentDashboard} />}
             </StyledDashboardComponent>
           ))}
         </DashboardContainer>
@@ -158,7 +172,7 @@ export const Dashboard = () => {
       <ActionsSpeedDial
         ariaLabel="Dashboard actions SpeedDial "
         direction="down"
-        sx={{ position: 'fixed', top: '12px', right: '30px' }}
+        sx={{ position: 'fixed', top: '12px', right: '12px' }}
         icon={<SpeedDialIcon />}
       >
         {speedDialActions.map((action) => (

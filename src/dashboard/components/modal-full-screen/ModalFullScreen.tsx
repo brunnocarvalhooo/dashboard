@@ -2,14 +2,15 @@ import { Box } from '@mui/material'
 
 import CloseIcon from '@mui/icons-material/Close';
 
-import { IDashboard } from '../../../shared/dtos/dashboard'
 import { CloseModalButton, StyledDialog, StyledDialogContent } from './styles'
 import { SlideUpTransition } from '../../../shared/styles/transitions';
+import { IComponent } from '../../../shared/dtos/components';
+import { VDialog } from '../../../shared/components';
 
 type Props = {
   open: boolean
   handleChangeOpen: (newValue: number | undefined) => void
-  component: IDashboard
+  component: IComponent
 }
 
 export const ModalFullScreen = ({ open, handleChangeOpen, component }: Props) => {
@@ -18,22 +19,20 @@ export const ModalFullScreen = ({ open, handleChangeOpen, component }: Props) =>
   }
 
   return (
-    <StyledDialog
+    <VDialog
       open={open}
-      onClose={handleClose}
+      handleClose={handleClose}
       fullWidth
       maxWidth='xl'
       TransitionComponent={SlideUpTransition}
     >
-      <StyledDialogContent>
-        <Box>
-          {component.content}
+      <Box height='86vh'>
+        {/* {component.content} */}
 
-          <CloseModalButton onClick={handleClose}>
-            <CloseIcon />
-          </CloseModalButton>
-        </Box>
-      </StyledDialogContent>
-    </StyledDialog>
+        <CloseModalButton onClick={handleClose}>
+          <CloseIcon />
+        </CloseModalButton>
+      </Box>
+    </VDialog>
   )
 }

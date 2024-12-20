@@ -11,11 +11,11 @@ interface Props {
 const AppProvider: React.FC<Props> = ({ children }) => (
   <AppThemeProvider>
     <DrawerProvider>
-      <MenuSideBar>
-        <DashboardsProvider>
+      <DashboardsProvider>
+        <MenuSideBar>
           {children}
-        </DashboardsProvider>
-      </MenuSideBar>
+        </MenuSideBar>
+      </DashboardsProvider>
     </DrawerProvider>
   </AppThemeProvider>
 )

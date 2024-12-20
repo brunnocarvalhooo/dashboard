@@ -1,7 +1,7 @@
 import { DialogActions, DialogContent, DialogTitle, styled } from "@mui/material";
 
-const borderColor = (themeMode: 'dark' | 'light') => {
-  return `rgba(${themeMode === 'dark' ? 255 : 0}, ${themeMode === 'dark' ? 255 : 0}, ${themeMode === 'dark' ? 255 : 0}, 0.15)`
+export const borderColor = (themeMode: 'dark' | 'light', opacity?: string) => {
+  return `rgba(${themeMode === 'dark' ? 255 : 0}, ${themeMode === 'dark' ? 255 : 0}, ${themeMode === 'dark' ? 255 : 0},${opacity || '0.15'})`
 }
 
 export const StyledDialogTitle = styled(DialogTitle)(({ theme }) => ({
@@ -13,6 +13,7 @@ export const StyledDialogTitle = styled(DialogTitle)(({ theme }) => ({
   border: '1px solid',
   borderRadius: '12px 12px 0px 0px',
   borderColor: borderColor(theme.palette.mode),
+  background: theme.palette.mode === 'dark' ? '#111' : '#fff',
 }))
 
 export const StyledDialogContent = styled(DialogContent)(({ theme }) => ({
@@ -21,6 +22,7 @@ export const StyledDialogContent = styled(DialogContent)(({ theme }) => ({
   bgcolor: theme.palette.background.paper,
   borderInline: '1px solid',
   borderColor: borderColor(theme.palette.mode),
+  background: theme.palette.mode === 'dark' ? '#111' : '#fff',
 
   '&::-webkit-scrollbar': {
     width: '6px',
@@ -43,7 +45,7 @@ export const StyledDialogContent = styled(DialogContent)(({ theme }) => ({
 }))
 
 export const StyledDialogActions = styled(DialogActions)(({ theme }) => ({
-  bgcolor: theme.palette.background.paper,
+  background: theme.palette.mode === 'dark' ? '#111' : '#fff',
   paddingInline: '16px',
   paddingBottom: '16px',
   borderInline: '1px solid',

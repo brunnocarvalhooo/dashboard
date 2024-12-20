@@ -18,9 +18,7 @@ export const ModalAddDashboard = ({ open, handleChangeOpen }: Props) => {
       open={open}
       handleClose={handleClose}
       summary={
-        <Typography
-          fontWeight='bold'
-        >Criar novo dashboard</Typography>
+        <Typography>Criar novo dashboard</Typography>
       }
       actions={
         <VButton

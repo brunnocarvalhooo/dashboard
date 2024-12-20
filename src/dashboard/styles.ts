@@ -1,8 +1,9 @@
 import { Box, IconButton, ImageList, ImageListItem, keyframes, SpeedDial, styled } from "@mui/material";
 import { VIconButton } from "../shared/components";
+import { borderColor } from "../shared/components/interface/dialog/styles";
 
 export const Container = styled(Box)(() => ({
-  paddingBlock: '80px',
+  paddingBlock: '84px',
   paddingInline: '4px',
   position: 'relative'
 }))
@@ -77,31 +78,42 @@ export const RollUpButton = styled(VIconButton)(() => ({
   color: 'white',
 }))
 
-export const ActionsSpeedDial = styled(SpeedDial)(() => ({
+export const ActionsSpeedDial = styled(SpeedDial)(({ theme }) => ({
   zIndex: 99,
 
   '& .MuiSpeedDial-fab': {
-    color: 'white',
-    // width: '34px',
-    // height: '34px',
-    boxShadow: 'none'
+    color: theme.palette.primary.contrastText,
+    boxShadow: 'none',
+    background: theme.palette.background.paper,
+    border: '1px solid',
+    borderColor: borderColor(theme.palette.mode),
+
+    '&:hover': {
+      background: theme.palette.background.paper,
+    }
   },
 
   '& .MuiSpeedDialAction-fab': {
-    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)'
+    color: theme.palette.primary.contrastText,
+    boxShadow: 'none',
+    background: theme.palette.background.paper,
+    border: '1px solid',
+    borderColor: borderColor(theme.palette.mode),
   },
 }))
 
+export const HEADER_HEIGHT = '48px'
+
 export const HeaderContainer = styled(Box)(() => ({
-  width: 'calc(100vw - 100px)',
-  height: '60px',
+  width: 'calc(100vw - 80px)',
+  height: HEADER_HEIGHT,
   position: 'absolute',
   top: 0,
   left: 0,
   display: 'flex',
   alignItems: 'center',
-  gap: '16px',
-  paddingLeft: '16px',
+  gap: '8px',
+  paddingLeft: '8px',
 }))
 
 export const FullScreenButton = styled(IconButton)(() => ({
@@ -112,3 +124,35 @@ export const FullScreenButton = styled(IconButton)(() => ({
   zIndex: 2,
   transition: 'opacity 0.3s ease',
 }));
+
+export const CategoriesContainer = styled(Box)(({ theme }) => ({
+  overflow: 'auto',
+  width: 'calc(100vw - 90px)',
+  position: 'absolute',
+  top: HEADER_HEIGHT,
+  left: '8px',
+  display: 'flex',
+  alignSelf: 'center',
+  gap: '8px',
+
+  '&::-webkit-scrollbar': {
+    width: '4px',
+    height: '4px',
+  },
+  '&::-webkit-scrollbar-thumb': {
+    backgroundColor:
+      theme.palette.mode === 'light'
+        ? theme.palette.grey[400]
+        : theme.palette.grey[900],
+    '&:hover': {
+      backgroundColor:
+        theme.palette.mode === 'light'
+          ? theme.palette.grey[500]
+          : theme.palette.grey[800],
+    },
+    borderRadius: '12px'
+  },
+  '&::-webkit-scrollbar-track': {
+    backgroundColor: 'transparent',
+  },
+}))

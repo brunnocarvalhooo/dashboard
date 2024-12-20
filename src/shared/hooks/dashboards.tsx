@@ -1,44 +1,123 @@
 import React, { useCallback, useState } from 'react'
 import { DashboardsContext } from '../contexts/dashboards'
 import { IDashboard } from '../dtos/dashboard'
-import { Typography } from '@mui/material';
 
 const dashboardData: IDashboard[] = [
   {
     id: 1,
-    width: 2,
-    height: 1,
-    content: <Typography>teste1</Typography>,
+    name: "Sales Dashboard",
+    categories: [
+      {
+        id: 1,
+        name: "Finance",
+        color: "#FF5733"
+      },
+      {
+        id: 2,
+        name: "Operations",
+        color: "#33C4FF"
+      }
+    ],
+    components: [
+      {
+        id: 1,
+        title: "Monthly Sales",
+        width: 6,
+        height: 1,
+        categories: [
+          {
+            id: 1,
+            name: "Finance",
+            color: "#FF5733"
+          }
+        ],
+        content: {
+          key: "sales-data",
+          data: {
+            totalSales: 50000,
+            growth: 10
+          }
+        }
+      },
+      {
+        id: 2,
+        title: "Operational Costs",
+        width: 6,
+        height: 1,
+        categories: [
+          {
+            id: 2,
+            name: "Operations",
+            color: "#33C4FF"
+          }
+        ],
+        content: {
+          key: "cost-data",
+          data: {
+            totalCosts: 20000,
+            variance: -5
+          }
+        }
+      }
+    ]
   },
   {
     id: 2,
-    width: 4,
-    height: 1,
-    content: <Typography>teste2</Typography>,
-  },
-  {
-    id: 3,
-    width: 1,
-    height: 1,
-    content: <Typography>teste3</Typography>,
-  },
-  {
-    id: 4,
-    width: 3,
-    height: 1,
-    content: <Typography>teste4</Typography>,
-  },
-  {
-    id: 5,
-    width: 2,
-    height: 1,
-    content: <Typography>teste5</Typography>,
-  },
-  {
-    id: 6,
-    width: 6,
-    height: 1,
-    content: <Typography>teste5</Typography>,
+    name: "Sales Dashboard",
+    categories: [
+      {
+        id: 1,
+        name: "Finance",
+        color: "#FF5733"
+      },
+      {
+        id: 2,
+        name: "Operations",
+        color: "#33C4FF"
+      }
+    ],
+    components: [
+      {
+        id: 1,
+        title: "Monthly Sales",
+        width: 6,
+        height: 1,
+        categories: [
+          {
+            id: 1,
+            name: "Finance",
+            color: "#FF5733"
+          }
+        ],
+        content: {
+          key: "sales-data",
+          data: {
+            totalSales: 50000,
+            growth: 10
+          }
+        }
+      },
+      {
+        id: 2,
+        title: "Operational Costs",
+        width: 6,
+        height: 1,
+        categories: [
+          {
+            id: 2,
+            name: "Operations",
+            color: "#33C4FF"
+          }
+        ],
+        content: {
+          key: "cost-data",
+          data: {
+            totalCosts: 20000,
+            variance: -5
+          }
+        }
+      }
+    ]
   },
 ];
 
@@ -48,9 +127,10 @@ interface DashboardsProps {
 
 const DashboardsProvider: React.FC<DashboardsProps> = ({ children }) => {
   const [dashboards, setDashboards] = useState<IDashboard[]>(dashboardData)
+  const [currentDashboard, setCurrentDashboard] = useState<IDashboard>(dashboardData[0])
 
   const handleChangeDashboards = useCallback((
-    updateFn: (prevRows: IDashboard[]) => IDashboard[],
+    updateFn: (prev: IDashboard[]) => IDashboard[],
   ) => {
     setDashboards((prev) => {
       const updatedRows = updateFn(prev)
@@ -63,6 +143,8 @@ const DashboardsProvider: React.FC<DashboardsProps> = ({ children }) => {
       value={{
         dashboards,
         handleChangeDashboards,
+
+        currentDashboard
       }}
     >
       {children}
