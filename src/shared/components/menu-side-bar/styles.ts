@@ -51,7 +51,7 @@ export const MenuButton = styled(IconButton)(({ theme }) => ({
 }))
 
 export const StyledListItemButton = styled(ListItemButton)(() => ({
-  height: '42px',
+  height: '38px',
   borderRadius: '8px'
 }))
 

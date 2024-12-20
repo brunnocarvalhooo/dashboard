@@ -82,23 +82,25 @@ export const ActionsSpeedDial = styled(SpeedDial)(({ theme }) => ({
   zIndex: 99,
 
   '& .MuiSpeedDial-fab': {
-    color: theme.palette.primary.contrastText,
+    color: theme.palette.background.default,
+    boxShadow: 'none',
+    background: theme.palette.primary.main,
+  },
+
+  '& .MuiSpeedDialAction-fab': {
+    color: theme.palette.text.secondary,
     boxShadow: 'none',
     background: theme.palette.background.paper,
     border: '1px solid',
     borderColor: borderColor(theme.palette.mode),
+
+    '&:focused': {
+      boxShadow: 'none',
+    },
 
     '&:hover': {
       background: theme.palette.background.paper,
     }
-  },
-
-  '& .MuiSpeedDialAction-fab': {
-    color: theme.palette.primary.contrastText,
-    boxShadow: 'none',
-    background: theme.palette.background.paper,
-    border: '1px solid',
-    borderColor: borderColor(theme.palette.mode),
   },
 }))
 

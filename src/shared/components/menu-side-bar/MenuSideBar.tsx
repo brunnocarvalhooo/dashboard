@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box'
 
-import { Chip, Collapse, Divider, IconButton, List, ListItemText, Tooltip, Typography } from '@mui/material'
+import { Collapse, Divider, IconButton, List, ListItemText, Tooltip, Typography } from '@mui/material'
 
 import { useDrawer } from '../../contexts/drawer'
 import { ChildrenContainer, DrawerContentContainer, MenuButton, StyledDrawer, StyledListItemButton } from './styles'
@@ -16,10 +16,11 @@ import BuildIcon from '@mui/icons-material/Build';
 import { useAppTheme } from '../../contexts/theme';
 import { ModalAddDashboard } from '../modal-add-dashboard/ModalAddDashboard';
 import { useState } from 'react';
-import { truncateText } from '../../utils/masks';
+import { getContrastColor, truncateText } from '../../utils/masks';
 import { VIconButton } from '../interface';
 import { ICategory } from '../../dtos/categories';
 import { useDashboards } from '../../contexts/dashboards';
+import { CategoryChip } from '../interface/chip/category-chip/CategoryChip';
 
 const Ctagories: ICategory[] = [
   {
@@ -34,7 +35,7 @@ const Ctagories: ICategory[] = [
   }
 ]
 
-export const DRAWER_WIDTH = 280
+export const DRAWER_WIDTH = 260
 
 type IMenuSideBarProps = {
   children: React.ReactNode
@@ -45,7 +46,7 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
 
   const { themeName, toggleTheme } = useAppTheme()
 
-  const { dashboards } = useDashboards()
+  const { dashboards, handleChangeCurrentDashboard } = useDashboards()
 
   const [openModalAddFashboard, setOpenModalAddFashboard] = useState(false)
   const handleChangeOpenModalAddFashboard = (newValue: boolean) => {
@@ -72,10 +73,12 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
         >
           <DrawerContentContainer>
             <Box display='flex' justifyContent='space-between' alignItems='center' py='12px'>
-              <VIconButton
-                icon={<DashboardCustomizeIcon />}
-                onClick={() => handleChangeOpenModalAddFashboard(true)} size='small'
-              />
+              <Tooltip title='Novo dashboard' placement='right'>
+                <VIconButton
+                  icon={<DashboardCustomizeIcon />}
+                  onClick={() => handleChangeOpenModalAddFashboard(true)} size='small'
+                />
+              </Tooltip>
 
               <VIconButton
                 icon={themeName === 'light' ? <LightModeIcon /> : <DarkModeIcon />}
@@ -101,22 +104,35 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
                     </IconButton>
                   </Box>
 
-                  <IconButton size='small'>
-                    <BuildIcon sx={{ fontSize: '0.7em' }} />
-                  </IconButton>
+                  <Tooltip title='Gerenciar categorias de dashboard' placement='right'>
+                    <IconButton size='small'>
+                      <BuildIcon sx={{ fontSize: '0.7em' }} />
+                    </IconButton>
+                  </Tooltip>
+
                 </Box>
 
                 <Collapse in={openCategoryCollapse} timeout="auto" unmountOnExit>
                   <Box mt={0.5}>
-                    {Ctagories.map((categorie) => (
-                      <Chip label={truncateText(categorie.name, 12)} size="small" sx={{ mr: '4px', mb: '4px', background: categorie.color }} />
+                    {Ctagories.map((categorie, i) => (
+                      <CategoryChip
+                        key={i}
+                        categoryColor={categorie.color}
+                        label={
+                          <Typography
+                            variant='caption'
+                            color={getContrastColor(categorie.color)}
+                          >{truncateText(categorie.name, 12)}</Typography>
+                        }
+                        size="small"
+                      />
                     ))}
                   </Box>
                 </Collapse>
               </Box>
 
               <Box>
-                <Box display='flex' alignItems='center'>
+                <Box display='flex' alignItems='center' mb={0.5}>
                   <Typography variant='body2'>Dashboards</Typography>
                   <IconButton
                     size='small'
@@ -131,11 +147,18 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
                 <Collapse in={openDashboardsCollapse} timeout="auto" unmountOnExit>
                   <List disablePadding>
                     {dashboards.map((dashboard, i) => (
-                      <StyledListItemButton key={i}>
+                      <StyledListItemButton
+                        key={i}
+                        onClick={() => {
+                          handleChangeCurrentDashboard(dashboard)
+                          toggleDrawerOpen(false)
+                        }}
+                      >
                         <ListItemText
                           primary={
                             <Typography
                               color='text.primary'
+                              variant='body2'
                               noWrap
                             >{dashboard.name}</Typography>
                           }

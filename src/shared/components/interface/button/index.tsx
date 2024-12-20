@@ -1,9 +1,9 @@
 import {
   ButtonProps,
   CircularProgress,
-  Button,
 } from '@mui/material'
 import React from 'react'
+import { StyledButton } from './styles'
 
 type Props = ButtonProps & {
   label: React.ReactNode
@@ -18,12 +18,12 @@ export const VButton: React.FC<Props> = ({
   ...rest
 }) => {
   return (
-    <Button disableElevation disabled={loading} {...rest} color={color} sx={{ borderRadius: '22px' }}>
+    <StyledButton disableElevation disabled={loading} {...rest} color={color}>
       {loading ? (
         <CircularProgress size={14} sx={{ margin: '2px', color: 'white' }} />
       ) : (
         label
       )}
-    </Button>
+    </StyledButton>
   )
 }

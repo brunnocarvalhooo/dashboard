@@ -5,7 +5,7 @@ import { IDashboard } from '../dtos/dashboard'
 const dashboardData: IDashboard[] = [
   {
     id: 1,
-    name: "Sales Dashboard",
+    name: "Sales Dashboard 123",
     categories: [
       {
         id: 1,
@@ -63,7 +63,7 @@ const dashboardData: IDashboard[] = [
   },
   {
     id: 2,
-    name: "Sales Dashboard",
+    name: "Sales Dashboard 456",
     categories: [
       {
         id: 1,
@@ -138,13 +138,18 @@ const DashboardsProvider: React.FC<DashboardsProps> = ({ children }) => {
     })
   }, [])
 
+  const handleChangeCurrentDashboard = (newDashboard: IDashboard) => {
+    setCurrentDashboard(newDashboard)
+  }
+
   return (
     <DashboardsContext.Provider
       value={{
         dashboards,
         handleChangeDashboards,
 
-        currentDashboard
+        currentDashboard,
+        handleChangeCurrentDashboard
       }}
     >
       {children}

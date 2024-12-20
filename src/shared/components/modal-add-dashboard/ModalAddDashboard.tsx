@@ -18,7 +18,7 @@ export const ModalAddDashboard = ({ open, handleChangeOpen }: Props) => {
       open={open}
       handleClose={handleClose}
       summary={
-        <Typography>Criar novo dashboard</Typography>
+        <Typography color="text.primary">Criar novo dashboard</Typography>
       }
       actions={
         <VButton
@@ -29,7 +29,6 @@ export const ModalAddDashboard = ({ open, handleChangeOpen }: Props) => {
             <Typography
               textTransform='capitalize'
               color="white"
-              fontWeight='bold'
             >Criar</Typography>
           }
         />

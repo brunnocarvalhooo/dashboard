@@ -64,9 +64,9 @@ export const DemensionsButtons = ({ dashboard, component }: Props) => {
       >
         <DimensionButton
           disableElevation
-          variant="contained"
+          variant="outlined"
           size="small"
-          color="secondary"
+          color="primary"
           disabled={component.width === 12}
           onClick={() => handleChangeDimension('right', '+')}
         >
@@ -75,9 +75,9 @@ export const DemensionsButtons = ({ dashboard, component }: Props) => {
 
         <DimensionButton
           disableElevation
-          variant="contained"
+          variant="outlined"
           size="small"
-          color="secondary"
+          color="primary"
           disabled={component.width === 1}
           onClick={() => handleChangeDimension('right', '-')}
         >
@@ -90,7 +90,7 @@ export const DemensionsButtons = ({ dashboard, component }: Props) => {
           disableElevation
           variant="outlined"
           size="small"
-          color="secondary"
+          color="primary"
           disabled={component.height === 4}
           onClick={() => handleChangeDimension('bottom', '+')}
         >
@@ -101,7 +101,7 @@ export const DemensionsButtons = ({ dashboard, component }: Props) => {
           disableElevation
           variant="outlined"
           size="small"
-          color="secondary"
+          color="primary"
           disabled={component.height === 1}
           onClick={() => handleChangeDimension('bottom', '-')}
         >

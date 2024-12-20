@@ -2,7 +2,7 @@ import { Box } from '@mui/material'
 
 import CloseIcon from '@mui/icons-material/Close';
 
-import { CloseModalButton, StyledDialog, StyledDialogContent } from './styles'
+import { CloseModalButton } from './styles'
 import { SlideUpTransition } from '../../../shared/styles/transitions';
 import { IComponent } from '../../../shared/dtos/components';
 import { VDialog } from '../../../shared/components';

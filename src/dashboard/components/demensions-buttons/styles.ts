@@ -17,5 +17,5 @@ export const DimensionButton = styled(Button)(({ theme }) => ({
   height: '22px',
   minWidth: '32px',
   borderColor: borderColor(theme.palette.mode),
-  color: 'white'
+  color: theme.palette.primary.contrastText
 }))

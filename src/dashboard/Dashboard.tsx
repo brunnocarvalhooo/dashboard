@@ -1,6 +1,6 @@
 import { StyledDashboardComponent, DashboardContainer, Container, RollUpButton, slideInUp, slideOutDown, ActionsSpeedDial, HeaderContainer, FullScreenButton, CategoriesContainer } from "./styles";
-import { Chip, SpeedDialAction, SpeedDialIcon, Tooltip, Typography, useTheme } from "@mui/material";
-import { useEffect, useState } from "react";
+import { SpeedDialAction, SpeedDialIcon, Tooltip, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { useEffect, useMemo, useState } from "react";
 
 import TransformIcon from '@mui/icons-material/Transform';
 import NorthIcon from '@mui/icons-material/North';
@@ -16,7 +16,8 @@ import { ModalAddComponent } from "./components/modal-add-component/ModalAddComp
 import { useDrawer } from "../shared/contexts/drawer";
 import { VIconButton } from "../shared/components";
 import { useDashboards } from "../shared/contexts/dashboards";
-import { IDashboard } from "../shared/dtos/dashboard";
+import { CategoryChip } from "../shared/components/interface/chip/category-chip/CategoryChip";
+import { getContrastColor } from "../shared/utils/masks";
 
 enum rollUpColors {
   BLUE = '#0597F2',
@@ -28,12 +29,28 @@ enum rollUpColors {
 
 export const Dashboard = () => {
   const theme = useTheme()
+  const smDown = useMediaQuery(theme.breakpoints.down('sm'))
+  const mdDown = useMediaQuery(theme.breakpoints.down('md'))
+  const lgDown = useMediaQuery(theme.breakpoints.down('lg'))
 
   const { isDrawerOpen, toggleDrawerOpen } = useDrawer()
 
-  const { dashboards } = useDashboards()
+  const { currentDashboard } = useDashboards()
 
-  const [currentDashboard, setCurrentDashboard] = useState<IDashboard>(dashboards[0])
+  const dashboardComponentHeight = useMemo(() => {
+    const percentages = { sm: 10, md: 15, lg: 20, default: 30 };
+  
+    if (smDown) {
+      return (window.innerHeight * percentages.sm) / 100;
+    } else if (mdDown) {
+      return (window.innerHeight * percentages.md) / 100;
+    } else if (lgDown) {
+      return (window.innerHeight * percentages.lg) / 100;
+    }
+  
+    return (window.innerHeight * percentages.default) / 100;
+  }, [lgDown, mdDown, smDown]);
+  
 
   const [openAddComponentModal, setOpenAddComponentModal] = useState(false)
   const handleChangeOpenAddComponentModal = (newValue: boolean) => {
@@ -52,8 +69,6 @@ export const Dashboard = () => {
 
   const [isRollUpButtonVisible, setIsRollUpButtonVisible] = useState(false)
   const [rollUpColor, setRollUpColor] = useState<string>(rollUpColors.BLUE)
-
-  console.log(isRollUpButtonVisible)
 
   const handleScrollToTop = () => {
     window.scrollTo({
@@ -102,26 +117,30 @@ export const Dashboard = () => {
         </Tooltip>
 
         <Typography noWrap color="text.primary">
-          Teste de titulo de DASHBOARD
+          {currentDashboard.name}
         </Typography>
       </HeaderContainer>
 
       <CategoriesContainer>
-        <Chip label={<Typography variant="caption">teste</Typography>} size="small" />
-        <Chip label={<Typography variant="caption">teste</Typography>} size="small" />
-        <Chip label={<Typography variant="caption">teste</Typography>} size="small" />
-        <Chip label={<Typography variant="caption">teste</Typography>} size="small" />
-        <Chip label={<Typography variant="caption">teste</Typography>} size="small" />
-        <Chip label={<Typography variant="caption">teste</Typography>} size="small" />
-        <Chip label={<Typography variant="caption">teste</Typography>} size="small" />
-        <Chip label={<Typography variant="caption">teste</Typography>} size="small" />
+        {currentDashboard.categories.map((category, i) => (
+          <CategoryChip
+            key={i}
+            categoryColor={category.color}
+            label={
+              <Typography
+                variant="caption"
+                color={getContrastColor(category.color)}
+              >{category.name}</Typography>
+            }
+            size="small" />
+        ))}
       </CategoriesContainer>
 
       {currentDashboard.components.length > 0 ? (
         <DashboardContainer
           variant="quilted"
           cols={6}
-          rowHeight={window.innerHeight / 100 * 30} /* 30vh */
+          rowHeight={dashboardComponentHeight} /* 30vh */
         >
           {currentDashboard.components.map((component, i) => (
             <StyledDashboardComponent

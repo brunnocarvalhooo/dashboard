@@ -6,6 +6,7 @@ export interface IDashboardsContextData {
   handleChangeDashboards: (updateFn: (prevRows: IDashboard[]) => IDashboard[]) => void
 
   currentDashboard: IDashboard
+  handleChangeCurrentDashboard: (newDashboard: IDashboard) => void
 }
 
 export const DashboardsContext = createContext({} as IDashboardsContextData)
