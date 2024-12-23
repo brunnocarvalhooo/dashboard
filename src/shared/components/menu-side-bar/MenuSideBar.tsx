@@ -5,22 +5,22 @@ import { Collapse, Divider, IconButton, List, ListItemText, Tooltip, Typography 
 import { useDrawer } from '../../contexts/drawer'
 import { ChildrenContainer, DrawerContentContainer, MenuButton, StyledDrawer, StyledListItemButton } from './styles'
 
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize';
-import LightModeIcon from '@mui/icons-material/LightMode';
-import DarkModeIcon from '@mui/icons-material/DarkMode';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import BuildIcon from '@mui/icons-material/Build';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
+import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize'
+import LightModeIcon from '@mui/icons-material/LightMode'
+import DarkModeIcon from '@mui/icons-material/DarkMode'
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
+import BuildIcon from '@mui/icons-material/Build'
 
-import { useAppTheme } from '../../contexts/theme';
-import { ModalAddDashboard } from '../modal-add-dashboard/ModalAddDashboard';
-import { useState } from 'react';
-import { getContrastColor, truncateText } from '../../utils/masks';
-import { VIconButton } from '../interface';
-import { ICategory } from '../../dtos/categories';
-import { useDashboards } from '../../contexts/dashboards';
-import { CategoryChip } from '../interface/chip/category-chip/CategoryChip';
+import { useAppTheme } from '../../contexts/theme'
+import { ModalAddDashboard } from '../modal-add-dashboard/ModalAddDashboard'
+import { useState } from 'react'
+import { getContrastColor, truncateText } from '../../utils/masks'
+import { VIconButton } from '../interface'
+import { ICategory } from '../../dtos/categories'
+import { useDashboards } from '../../contexts/dashboards'
+import { CategoryChip } from '../interface/chip/category-chip/CategoryChip'
 
 const Ctagories: ICategory[] = [
   {

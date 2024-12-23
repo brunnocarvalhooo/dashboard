@@ -119,7 +119,7 @@ const dashboardData: IDashboard[] = [
       }
     ]
   },
-];
+]
 
 interface DashboardsProps {
   children: React.ReactNode

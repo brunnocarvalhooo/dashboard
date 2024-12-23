@@ -1,7 +1,7 @@
-import { Box, Drawer, IconButton, ListItemButton, styled } from "@mui/material";
+import { Box, Drawer, IconButton, ListItemButton, styled } from "@mui/material"
 
-import { DRAWER_WIDTH } from "./MenuSideBar";
-import { borderColor } from "../interface/dialog/styles";
+import { DRAWER_WIDTH } from "./MenuSideBar"
+import { borderColor } from "../interface/dialog/styles"
 
 export const StyledDrawer = styled(Drawer)(({ theme }) => ({
   '& .MuiDrawer-paper': {

@@ -1,4 +1,4 @@
-import { DialogActions, DialogContent, DialogTitle, styled } from "@mui/material";
+import { DialogActions, DialogContent, DialogTitle, styled } from "@mui/material"
 
 export const borderColor = (themeMode: 'dark' | 'light', opacity?: string) => {
   return `rgba(${themeMode === 'dark' ? 255 : 0}, ${themeMode === 'dark' ? 255 : 0}, ${themeMode === 'dark' ? 255 : 0},${opacity || '0.15'})`

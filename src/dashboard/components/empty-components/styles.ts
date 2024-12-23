@@ -1,4 +1,4 @@
-import { Box, styled } from "@mui/material";
+import { Box, styled } from "@mui/material"
 
 export const EmptyContainer = styled(Box)(() => ({
   height: 'calc(100vh - 160px)',

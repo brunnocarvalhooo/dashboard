@@ -1,23 +1,25 @@
-import { StyledDashboardComponent, DashboardContainer, Container, RollUpButton, slideInUp, slideOutDown, ActionsSpeedDial, HeaderContainer, FullScreenButton, CategoriesContainer } from "./styles";
-import { SpeedDialAction, SpeedDialIcon, Tooltip, Typography, useMediaQuery, useTheme } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import { StyledDashboardComponent, DashboardContainer, Container, RollUpButton, slideInUp, slideOutDown, ActionsSpeedDial, HeaderContainer, FullScreenButton, CategoriesContainer } from "./styles"
+import { Box, Chip, SpeedDialAction, SpeedDialIcon, Tooltip, Typography, useMediaQuery, useTheme } from "@mui/material"
+import { useEffect, useMemo, useState } from "react"
 
-import TransformIcon from '@mui/icons-material/Transform';
-import NorthIcon from '@mui/icons-material/North';
-import AddchartIcon from '@mui/icons-material/Addchart';
-import FullscreenIcon from '@mui/icons-material/Fullscreen';
-import CloseIcon from '@mui/icons-material/Close';
-import MenuIcon from '@mui/icons-material/Menu';
+import TransformIcon from '@mui/icons-material/Transform'
+import NorthIcon from '@mui/icons-material/North'
+import AddchartIcon from '@mui/icons-material/Addchart'
+import FullscreenIcon from '@mui/icons-material/Fullscreen'
+import CloseIcon from '@mui/icons-material/Close'
+import MenuIcon from '@mui/icons-material/Menu'
+import SettingsIcon from '@mui/icons-material/Settings'
 
-import { DemensionsButtons } from "./components/demensions-buttons/DemensionsButtons";
-import { EmptyComponents } from "./components/empty-components/EmptyComponents";
-import { ModalFullScreen } from "./components/modal-full-screen/ModalFullScreen";
-import { ModalAddComponent } from "./components/modal-add-component/ModalAddComponent";
-import { useDrawer } from "../shared/contexts/drawer";
-import { VIconButton } from "../shared/components";
-import { useDashboards } from "../shared/contexts/dashboards";
-import { CategoryChip } from "../shared/components/interface/chip/category-chip/CategoryChip";
-import { getContrastColor } from "../shared/utils/masks";
+import { DemensionsButtons } from "./components/demensions-buttons/DemensionsButtons"
+import { EmptyComponents } from "./components/empty-components/EmptyComponents"
+import { ModalFullScreen } from "./components/modal-full-screen/ModalFullScreen"
+import { ModalAddComponent } from "./components/modal-add-component/ModalAddComponent"
+import { useDrawer } from "../shared/contexts/drawer"
+import { VIconButton } from "../shared/components"
+import { useDashboards } from "../shared/contexts/dashboards"
+import { CategoryChip } from "../shared/components/interface/chip/category-chip/CategoryChip"
+import { getContrastColor } from "../shared/utils/masks"
+import { CATEGORY_CHIP_MB, CATEGORY_CHIP_MR } from "../shared/components/interface/chip/category-chip/styles"
 
 enum rollUpColors {
   BLUE = '#0597F2',
@@ -38,19 +40,19 @@ export const Dashboard = () => {
   const { currentDashboard } = useDashboards()
 
   const dashboardComponentHeight = useMemo(() => {
-    const percentages = { sm: 10, md: 15, lg: 20, default: 30 };
-  
+    const percentages = { sm: 10, md: 15, lg: 20, default: 30 }
+
     if (smDown) {
-      return (window.innerHeight * percentages.sm) / 100;
+      return (window.innerHeight * percentages.sm) / 100
     } else if (mdDown) {
-      return (window.innerHeight * percentages.md) / 100;
+      return (window.innerHeight * percentages.md) / 100
     } else if (lgDown) {
-      return (window.innerHeight * percentages.lg) / 100;
+      return (window.innerHeight * percentages.lg) / 100
     }
-  
-    return (window.innerHeight * percentages.default) / 100;
-  }, [lgDown, mdDown, smDown]);
-  
+
+    return (window.innerHeight * percentages.default) / 100
+  }, [lgDown, mdDown, smDown])
+
 
   const [openAddComponentModal, setOpenAddComponentModal] = useState(false)
   const handleChangeOpenAddComponentModal = (newValue: boolean) => {
@@ -107,7 +109,7 @@ export const Dashboard = () => {
       name: 'Adicionar componente',
       onClick: () => handleChangeOpenAddComponentModal(true)
     },
-  ];
+  ]
 
   return (
     <Container>
@@ -122,6 +124,18 @@ export const Dashboard = () => {
       </HeaderContainer>
 
       <CategoriesContainer>
+        <Tooltip title={`Gerenciar categorias de ${currentDashboard.name}`} placement="bottom-end">
+          <Chip
+            size="small"
+            label={
+              <Box display='flex' justifyContent='center'>
+                <SettingsIcon sx={{ fontSize: '1rem' }} />
+              </Box>
+            }
+            sx={{ mr: CATEGORY_CHIP_MR, mb: CATEGORY_CHIP_MB }}
+          />
+        </Tooltip>
+
         {currentDashboard.categories.map((category, i) => (
           <CategoryChip
             key={i}
@@ -227,5 +241,5 @@ export const Dashboard = () => {
         </Tooltip>
       )}
     </Container>
-  );
+  )
 }

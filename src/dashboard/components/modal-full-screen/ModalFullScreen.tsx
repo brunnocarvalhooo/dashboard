@@ -1,11 +1,11 @@
 import { Box } from '@mui/material'
 
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from '@mui/icons-material/Close'
 
 import { CloseModalButton } from './styles'
-import { SlideUpTransition } from '../../../shared/styles/transitions';
-import { IComponent } from '../../../shared/dtos/components';
-import { VDialog } from '../../../shared/components';
+import { SlideUpTransition } from '../../../shared/styles/transitions'
+import { IComponent } from '../../../shared/dtos/components'
+import { VDialog } from '../../../shared/components'
 
 type Props = {
   open: boolean

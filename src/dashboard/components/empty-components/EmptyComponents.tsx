@@ -1,7 +1,7 @@
-import { Box, Button, Typography, useTheme } from "@mui/material";
+import { Box, Button, Typography, useTheme } from "@mui/material"
 import { EmptyContainer } from "./styles"
 
-import InsertChartIcon from '@mui/icons-material/InsertChart';
+import InsertChartIcon from '@mui/icons-material/InsertChart'
 
 type Props = {
   handleChangeOpenAddComponentModal: (newValue: boolean) => void

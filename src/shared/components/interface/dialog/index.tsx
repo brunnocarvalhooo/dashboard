@@ -60,7 +60,7 @@ export const VDialog = ({
               ? undefined
               : '0px 0px 12px 12px'
             : summary
-              ? '12px 12px 0px 0px'
+              ? '0px 0px 12px 12px'
               : '12px',
         }}
       >

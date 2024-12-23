@@ -1,4 +1,4 @@
-import { IconButton, styled } from "@mui/material";
+import { IconButton, styled } from "@mui/material"
 
 export const CloseModalButton = styled(IconButton)(({ theme }) => ({
   position: 'absolute',

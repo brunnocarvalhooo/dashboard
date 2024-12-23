@@ -1,7 +1,7 @@
-import { useTheme } from "@mui/material";
+import { useTheme } from "@mui/material"
 import { VIconButton } from "."
 
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from '@mui/icons-material/Close'
 
 type Props = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,9 +1,6 @@
 import { Typography } from "@mui/material"
 
-import CloseIcon from '@mui/icons-material/Close';
-
-import { SlideUpTransition } from "../../../shared/styles/transitions";
-import { CloseModalButton, StyledDialog, StyledDialogTitle } from "./styles";
+import { VDialog } from "../../../shared/components"
 
 type Props = {
   open: boolean
@@ -16,24 +13,19 @@ export const ModalAddComponent = ({ open, handleChangeOpen }: Props) => {
   }
 
   return (
-    <StyledDialog
+    <VDialog
       open={open}
-      onClose={handleClose}
+      handleClose={handleClose}
       fullWidth
       maxWidth='xl'
-      TransitionComponent={SlideUpTransition}
-    >
-      <StyledDialogTitle>
+      summary={
         <Typography
-          variant="h4"
           fontWeight='bold'
           color="text.primary"
         >Adicionar componente</Typography>
-
-        <CloseModalButton onClick={handleClose}>
-          <CloseIcon />
-        </CloseModalButton>
-      </StyledDialogTitle>
-    </StyledDialog>
+      }
+    >
+      <Typography>oi</Typography>
+    </VDialog>
   )
 }

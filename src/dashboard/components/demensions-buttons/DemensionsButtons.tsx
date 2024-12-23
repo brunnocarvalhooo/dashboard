@@ -1,10 +1,10 @@
 import { DimensionButton, DimensionsButtonsContainer, rotateStyle } from "./styles"
 
-import RemoveIcon from '@mui/icons-material/Remove';
-import AddIcon from '@mui/icons-material/Add';
-import { useDashboards } from "../../../shared/contexts/dashboards";
-import { IComponent } from "../../../shared/dtos/components";
-import { IDashboard } from "../../../shared/dtos/dashboard";
+import RemoveIcon from '@mui/icons-material/Remove'
+import AddIcon from '@mui/icons-material/Add'
+import { useDashboards } from "../../../shared/contexts/dashboards"
+import { IComponent } from "../../../shared/dtos/components"
+import { IDashboard } from "../../../shared/dtos/dashboard"
 
 type Props = {
   component: IComponent
@@ -18,40 +18,40 @@ export const DemensionsButtons = ({ dashboard, component }: Props) => {
     orientation: 'bottom' | 'right',
     action: '+' | '-'
   ) => {
-    const MAX_DIMENSIONS = { bottom: 4, right: 12 };
-    const MIN_DIMENSION = 1;
+    const MAX_DIMENSIONS = { bottom: 4, right: 12 }
+    const MIN_DIMENSION = 1
 
     handleChangeDashboards((prev) =>
       prev.map((prevDashboard) => {
         console.log(prevDashboard.id, dashboard.id)
-        if (prevDashboard.id !== dashboard.id) return prevDashboard;
+        if (prevDashboard.id !== dashboard.id) return prevDashboard
 
-        const updatedDashboard = { ...prevDashboard };
+        const updatedDashboard = { ...prevDashboard }
 
         const componentIndex = updatedDashboard.components.findIndex(
           (comp) => comp.id === component.id
-        );
+        )
 
         if (componentIndex !== -1) {
           const updatedComponent = {
             ...updatedDashboard.components[componentIndex],
-          };
+          }
 
-          const dimensionKey = orientation === 'bottom' ? 'height' : 'width';
-          const maxLimit = MAX_DIMENSIONS[orientation];
+          const dimensionKey = orientation === 'bottom' ? 'height' : 'width'
+          const maxLimit = MAX_DIMENSIONS[orientation]
 
           updatedComponent[dimensionKey] =
             action === '+'
               ? Math.min(updatedComponent[dimensionKey] + 1, maxLimit)
-              : Math.max(updatedComponent[dimensionKey] - 1, MIN_DIMENSION);
+              : Math.max(updatedComponent[dimensionKey] - 1, MIN_DIMENSION)
 
-          updatedDashboard.components[componentIndex] = updatedComponent;
+          updatedDashboard.components[componentIndex] = updatedComponent
         }
 
-        return updatedDashboard;
+        return updatedDashboard
       })
-    );
-  };
+    )
+  }
 
   return (
     <>

@@ -12,6 +12,6 @@ export const VIconButton = forwardRef<HTMLButtonElement, Props>(
       <StyledIconButton {...rest} ref={ref}>
         {icon}
       </StyledIconButton>
-    );
+    )
   }
-);
+)
