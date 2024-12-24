@@ -21,6 +21,9 @@ import { VIconButton } from '../interface'
 import { ICategory } from '../../dtos/categories'
 import { useDashboards } from '../../contexts/dashboards'
 import { CategoryChip } from '../interface/chip/category-chip/CategoryChip'
+import { Dashboard } from '../../../models/local-strorage/dashboards'
+import { storage } from '../../../models'
+import { EmptyDashboards } from '../empty-dashboards/EmptyDashboards'
 
 const Ctagories: ICategory[] = [
   {
@@ -61,6 +64,20 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
   const [openDashboardsCollapse, setOpenDashboardsCollapse] = useState(true)
   const handleChangeOpenDashboardsCollapse = (newValue: boolean) => {
     setOpenDashboardsCollapse(newValue)
+  }
+
+  const handleSelectDashboard = (id_dashboard: number) => {
+    const dashboard = new Dashboard(storage)
+
+    const selectedDashboard = dashboard.get(id_dashboard)
+
+    if (selectedDashboard) {
+      handleChangeCurrentDashboard(() => selectedDashboard)
+
+      toggleDrawerOpen(false)
+
+      return
+    }
   }
 
   return (
@@ -145,27 +162,30 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
                   </IconButton>
                 </Box>
                 <Collapse in={openDashboardsCollapse} timeout="auto" unmountOnExit>
-                  <List disablePadding>
-                    {dashboards.map((dashboard, i) => (
-                      <StyledListItemButton
-                        key={i}
-                        onClick={() => {
-                          handleChangeCurrentDashboard(dashboard)
-                          toggleDrawerOpen(false)
-                        }}
-                      >
-                        <ListItemText
-                          primary={
-                            <Typography
-                              color='text.primary'
-                              variant='body2'
-                              noWrap
-                            >{dashboard.name}</Typography>
-                          }
-                        />
-                      </StyledListItemButton>
-                    ))}
-                  </List>
+                  {dashboards.length > 0 ? (
+                    <List disablePadding>
+                      {dashboards.map((dashboard, i) => (
+                        <StyledListItemButton
+                          key={i}
+                          onClick={() => handleSelectDashboard(dashboard.id)}
+                        >
+                          <ListItemText
+                            primary={
+                              <Typography
+                                color='text.primary'
+                                variant='body2'
+                                noWrap
+                              >{dashboard.name}</Typography>
+                            }
+                          />
+                        </StyledListItemButton>
+                      ))}
+                    </List>
+                  ) : (
+                    <Box>
+                      <EmptyDashboards />
+                    </Box>
+                  )}
                 </Collapse>
               </Box>
             </Box>

@@ -1,7 +1,16 @@
 import { LS } from ".."
 import { ILSComponentCategories, ILSDashboardCategories } from "./category.model"
 
-export class Category {
+export interface ICategoryFactory {
+  create(
+    name: string,
+    color: string,
+    target: 'component_categories' | 'dashboard_categories',
+    id_target?: number
+  ): void 
+}
+
+export class Category implements ICategoryFactory {
   public create(
     name: string,
     color: string,

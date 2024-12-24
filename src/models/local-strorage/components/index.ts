@@ -1,6 +1,15 @@
 import { LS } from ".."
 
-export class Dashboard {
+export interface IComponentFactory {
+  create(
+    title: string,
+    width: number,
+    height: number,
+    id_dashboard: number
+  ): void
+}
+
+export class Component implements IComponentFactory {
   public create(
     title: string,
     width: number,
