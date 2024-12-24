@@ -1,4 +1,4 @@
 export interface ILSDashboard {
-  id: number,
+  id: number
   name: string
 }
