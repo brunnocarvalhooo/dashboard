@@ -6,7 +6,7 @@ interface DrawerProps {
 }
 
 const DrawerProvider: React.FC<DrawerProps> = ({ children }) => {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+  const [isDrawerOpen, setIsDrawerOpen] = useState(true)
 
   const toggleDrawerOpen = (newValue: boolean) => {
     setIsDrawerOpen(newValue)

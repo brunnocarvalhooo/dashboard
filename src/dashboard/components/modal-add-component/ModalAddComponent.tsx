@@ -20,7 +20,6 @@ export const ModalAddComponent = ({ open, handleChangeOpen }: Props) => {
       maxWidth='xl'
       summary={
         <Typography
-          fontWeight='bold'
           color="text.primary"
         >Adicionar componente</Typography>
       }

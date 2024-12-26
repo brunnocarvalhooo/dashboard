@@ -8,6 +8,8 @@ interface Props {
   children: React.ReactNode
 }
 
+export const APP_NAME = 'Dashboard'
+
 const AppProvider: React.FC<Props> = ({ children }) => (
   <AppThemeProvider>
     <DrawerProvider>

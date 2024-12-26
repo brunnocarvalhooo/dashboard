@@ -3,6 +3,8 @@ import { DashboardsContext } from '../contexts/dashboards'
 import { IDashboard } from '../dtos/dashboard'
 import { Dashboard } from '../../models/local-strorage/dashboards'
 import { ILSDashboard } from '../../models/local-strorage/dashboards/dashboard.model'
+import { storage } from '../../models'
+import { ICategory } from '../dtos/categories'
 
 interface DashboardsProps {
   children: React.ReactNode
@@ -10,6 +12,7 @@ interface DashboardsProps {
 
 const DashboardsProvider: React.FC<DashboardsProps> = ({ children }) => {
   const [dashboards, setDashboards] = useState<ILSDashboard[]>([])
+  const [dashboardsCategories, setDashboardsCategories] = useState<ICategory[]>([])
   
   const [currentDashboard, setCurrentDashboard] = useState<IDashboard>()
 
@@ -23,9 +26,15 @@ const DashboardsProvider: React.FC<DashboardsProps> = ({ children }) => {
   }, [])
   
   const fetchDashboards = () => {
-    const dashboard = new Dashboard()
+    const dashboard = new Dashboard(storage)
     const dashboardList = dashboard.list()
     setDashboards(dashboardList)
+  }
+
+  const fetchDashboardsCategories = () => {
+    const dashboard = new Dashboard(storage)
+    const dashboardList = dashboard.getCategories()
+    setDashboardsCategories(dashboardList)
   }
 
   useEffect(() => {
@@ -36,7 +45,9 @@ const DashboardsProvider: React.FC<DashboardsProps> = ({ children }) => {
     <DashboardsContext.Provider
       value={{
         dashboards,
+        dashboardsCategories,
         fetchDashboards,
+        fetchDashboardsCategories,
         currentDashboard,
         handleChangeCurrentDashboard
       }}

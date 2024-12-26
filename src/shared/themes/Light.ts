@@ -9,7 +9,7 @@ export const LightTheme = createTheme({
     },
     text: {
       primary: '#000',
-      secondary: '#666',
+      secondary: '#999',
     },
     background: {
       default: '#EEEEEE',

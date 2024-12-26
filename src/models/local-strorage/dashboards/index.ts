@@ -4,10 +4,10 @@ import { ILSCategory } from "../categories/category.model"
 import { ILSDashboard } from "./dashboard.model"
 
 export interface IDashboardFactory {
-  create(name: string): void 
+  create(name: string): number
   get(id_dashboard: number): IDashboard | undefined
   list(): ILSDashboard[]
-  getCategories(id_dashboard: number): ILSCategory[] | undefined
+  getCategories(): ILSCategory[]
 }
 
 export class Dashboard implements IDashboardFactory {
@@ -30,43 +30,45 @@ export class Dashboard implements IDashboardFactory {
     })
 
     this.storage.set({ ...rest, dashboards })
+
+    return newId
   }
 
   public get(id_dashboard: number) {
     const { dashboards, dashboard_categories, categories, components, component_categories } = this.storage.get()
-  
+
     const dashboard = dashboards.find((dashboard) => dashboard.id === id_dashboard)
-  
+
     if (!dashboard) {
       console.warn(`Dashboard with id ${id_dashboard} not found.`)
       return undefined
     }
-  
+
     const relatedDashboardCategoryIds = dashboard_categories
       .filter((relation) => relation.id_dashboard === id_dashboard)
       .map((relation) => relation.id_category)
-  
+
     const relatedCategories = categories.filter((category) =>
       relatedDashboardCategoryIds.includes(category.id)
     )
-  
+
     const relatedComponents = components
       .filter((component) => component.id_dashboard === id_dashboard)
       .map((component) => {
         const componentCategoryIds = component_categories
           .filter((relation) => relation.id_component === component.id)
           .map((relation) => relation.id_category)
-  
+
         const componentCategories = categories.filter((category) =>
           componentCategoryIds.includes(category.id)
         )
-  
+
         return {
           ...component,
-          categories: componentCategories, 
+          categories: componentCategories,
         }
       })
-  
+
     return {
       id: dashboard.id,
       name: dashboard.name,
@@ -83,22 +85,14 @@ export class Dashboard implements IDashboardFactory {
     return dashboards
   }
 
-  public getCategories(id_dashboard: number) {
+  public getCategories() {
     const storage = new LS()
 
-    const { dashboards, dashboard_categories, categories } = storage.get()
-  
-    const dashboard = dashboards.find((dashboard) => dashboard.id === id_dashboard)
-  
-    if (!dashboard) {
-      console.warn(`Dashboard with id ${id_dashboard} not found.`)
-      return undefined
-    }
-  
+    const { dashboard_categories, categories } = storage.get()
+
     const relatedDashboardCategoryIds = dashboard_categories
-      .filter((relation) => relation.id_dashboard === id_dashboard)
       .map((relation) => relation.id_category)
-  
+
     const relatedCategories = categories.filter((category) =>
       relatedDashboardCategoryIds.includes(category.id)
     )

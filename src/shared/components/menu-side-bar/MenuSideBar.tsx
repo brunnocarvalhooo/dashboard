@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box'
 
-import { Collapse, Divider, IconButton, List, ListItemText, Tooltip, Typography } from '@mui/material'
+import { Button, Collapse, Divider, IconButton, List, ListItemText, Tooltip, Typography } from '@mui/material'
 
 import { useDrawer } from '../../contexts/drawer'
 import { ChildrenContainer, DrawerContentContainer, MenuButton, StyledDrawer, StyledListItemButton } from './styles'
@@ -15,28 +15,14 @@ import BuildIcon from '@mui/icons-material/Build'
 
 import { useAppTheme } from '../../contexts/theme'
 import { ModalAddDashboard } from '../modal-add-dashboard/ModalAddDashboard'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { getContrastColor, truncateText } from '../../utils/masks'
 import { VIconButton } from '../interface'
-import { ICategory } from '../../dtos/categories'
 import { useDashboards } from '../../contexts/dashboards'
 import { CategoryChip } from '../interface/chip/category-chip/CategoryChip'
 import { Dashboard } from '../../../models/local-strorage/dashboards'
 import { storage } from '../../../models'
-import { EmptyDashboards } from '../empty-dashboards/EmptyDashboards'
-
-const Ctagories: ICategory[] = [
-  {
-    id: 1,
-    name: "Finance",
-    color: "#FF5733"
-  },
-  {
-    id: 2,
-    name: "Operations",
-    color: "#33C4FF"
-  }
-]
+import { CreateDashboardButtonLabel, EmptyContainer } from '../home'
 
 export const DRAWER_WIDTH = 260
 
@@ -49,11 +35,16 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
 
   const { themeName, toggleTheme } = useAppTheme()
 
-  const { dashboards, handleChangeCurrentDashboard } = useDashboards()
+  const {
+    dashboards,
+    handleChangeCurrentDashboard,
+    dashboardsCategories,
+    fetchDashboardsCategories
+  } = useDashboards()
 
-  const [openModalAddFashboard, setOpenModalAddFashboard] = useState(false)
-  const handleChangeOpenModalAddFashboard = (newValue: boolean) => {
-    setOpenModalAddFashboard(newValue)
+  const [openModalAddDashboard, setOpenModalAddDashboard] = useState(false)
+  const handleChangeOpenModalAddDashboard = (newValue: boolean) => {
+    setOpenModalAddDashboard(newValue)
   }
 
   const [openCategoryCollapse, setOpenCategoryCollapse] = useState(true)
@@ -80,6 +71,10 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
     }
   }
 
+  useEffect(() => {
+    fetchDashboardsCategories()
+  }, [fetchDashboardsCategories, isDrawerOpen])
+
   return (
     <>
       <Box position='relative'>
@@ -93,7 +88,7 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
               <Tooltip title='Novo dashboard' placement='right'>
                 <VIconButton
                   icon={<DashboardCustomizeIcon />}
-                  onClick={() => handleChangeOpenModalAddFashboard(true)} size='small'
+                  onClick={() => handleChangeOpenModalAddDashboard(true)} size='small'
                 />
               </Tooltip>
 
@@ -126,24 +121,30 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
                       <BuildIcon sx={{ fontSize: '0.7em' }} />
                     </IconButton>
                   </Tooltip>
-
                 </Box>
 
                 <Collapse in={openCategoryCollapse} timeout="auto" unmountOnExit>
                   <Box mt={0.5}>
-                    {Ctagories.map((categorie, i) => (
-                      <CategoryChip
-                        key={i}
-                        categoryColor={categorie.color}
-                        label={
-                          <Typography
-                            variant='caption'
-                            color={getContrastColor(categorie.color)}
-                          >{truncateText(categorie.name, 12)}</Typography>
-                        }
-                        size="small"
-                      />
-                    ))}
+                    {dashboardsCategories.length > 0 ?
+                      dashboardsCategories.map((categorie, i) => (
+                        <CategoryChip
+                          key={i}
+                          categoryColor={categorie.color}
+                          label={
+                            <Typography
+                              variant='caption'
+                              color={getContrastColor(categorie.color)}
+                            >{truncateText(categorie.name, 12)}</Typography>
+                          }
+                          size="small"
+                        />
+                      )) : (
+                        <Typography
+                          variant='body2'
+                          color='text.secondary'
+                          textAlign='left'
+                        >Nenhuma categoria de dashboard disponivel</Typography>
+                      )}
                   </Box>
                 </Collapse>
               </Box>
@@ -182,9 +183,23 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
                       ))}
                     </List>
                   ) : (
-                    <Box>
-                      <EmptyDashboards />
-                    </Box>
+                    <EmptyContainer sx={{ alignItems: 'flex-start' }}>
+                      <Typography
+                        variant='body2'
+                        color='text.secondary'
+                        textAlign='left'
+                      >
+                        Nenhum dashboard disponivel
+                      </Typography>
+
+                      <Button onClick={() => handleChangeOpenModalAddDashboard(true)}>
+                        <CreateDashboardButtonLabel
+                          variant="caption"
+                          textTransform='none'
+                          textAlign='left'
+                        >Clique aqui para criar um novo dashboard</CreateDashboardButtonLabel>
+                      </Button>
+                    </EmptyContainer>
                   )}
                 </Collapse>
               </Box>
@@ -227,8 +242,8 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
       </Box>
 
       <ModalAddDashboard
-        open={openModalAddFashboard}
-        handleChangeOpen={handleChangeOpenModalAddFashboard}
+        open={openModalAddDashboard}
+        handleChangeOpen={handleChangeOpenModalAddDashboard}
       />
     </>
   )

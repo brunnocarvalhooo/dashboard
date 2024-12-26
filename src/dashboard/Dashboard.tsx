@@ -13,13 +13,14 @@ import MenuIcon from '@mui/icons-material/Menu'
 import { CATEGORY_CHIP_MB, CATEGORY_CHIP_MR } from "../shared/components/interface/chip/category-chip/styles"
 import { CategoryChip } from "../shared/components/interface/chip/category-chip/CategoryChip"
 import { ModalAddComponent } from "./components/modal-add-component/ModalAddComponent"
-import { DemensionsButtons } from "./components/demensions-buttons/DemensionsButtons"
+import { DemensionsButtons } from "./parts/demensions-buttons/DemensionsButtons"
 import { ModalFullScreen } from "./components/modal-full-screen/ModalFullScreen"
-import { EmptyComponents } from "./components/empty-components/EmptyComponents"
+import { EmptyComponents } from "./parts/empty-components/EmptyComponents"
 import { useDashboards } from "../shared/contexts/dashboards"
 import { getContrastColor } from "../shared/utils/masks"
 import { useDrawer } from "../shared/contexts/drawer"
 import { EmptyDashboards, VIconButton } from "../shared/components"
+import { Footer } from "./parts/footer/Footer"
 
 enum rollUpColors {
   BLUE = '#0597F2',
@@ -100,15 +101,19 @@ export const Dashboard = () => {
 
   const speedDialActions = [
     {
-      icon: dimensionsMode ? <CloseIcon fontSize="small" /> : <TransformIcon fontSize="small" />,
-      name: dimensionsMode ? 'Sair da edição de dimensões' : 'Editar dimensões',
-      onClick: () => handleChangeDimensionsMode()
-    },
-    {
       icon: <AddchartIcon fontSize="small" />,
       name: 'Adicionar componente',
       onClick: () => handleChangeOpenAddComponentModal(true)
     },
+    ...(currentDashboard && currentDashboard.components.length > 0 ?
+      [
+        {
+          icon: dimensionsMode ? <CloseIcon fontSize="small" /> : <TransformIcon fontSize="small" />,
+          name: dimensionsMode ? 'Sair da edição de dimensões' : 'Editar dimensões',
+          onClick: () => handleChangeDimensionsMode()
+        }
+      ] : []
+    )
   ]
 
   return (
@@ -246,10 +251,12 @@ export const Dashboard = () => {
           )}
         </>
       ) : (
-        <Box width='calc(100vw - 8px)' height='calc(100vh - 160px)'>
+        <Box height='100vh' pb={16}>
           <EmptyDashboards />
         </Box>
       )}
+
+      <Footer />
     </Container>
   )
 }

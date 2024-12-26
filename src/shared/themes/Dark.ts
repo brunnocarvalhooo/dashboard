@@ -9,7 +9,7 @@ export const DarkTheme = createTheme({
     },
     text: {
       primary: '#fff',
-      secondary: '#888',
+      secondary: '#444',
     },
     background: {
       default: '#000000',

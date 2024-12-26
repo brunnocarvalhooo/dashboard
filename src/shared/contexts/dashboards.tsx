@@ -1,10 +1,13 @@
 import { createContext, useContext } from "react"
 import { IDashboard } from "../dtos/dashboard"
 import { ILSDashboard } from "../../models/local-strorage/dashboards/dashboard.model"
+import { ICategory } from "../dtos/categories"
 
 export interface IDashboardsContextData {
   dashboards: ILSDashboard[]
+  dashboardsCategories: ICategory[]
   fetchDashboards: () => void
+  fetchDashboardsCategories: () => void
   currentDashboard: IDashboard | undefined
   handleChangeCurrentDashboard: (updateFn: (prev: IDashboard | undefined) => IDashboard) => void
 }
