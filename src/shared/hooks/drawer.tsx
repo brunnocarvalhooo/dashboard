@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { DrawerContext } from '../contexts/drawer'
+import { useDashboards } from '../contexts/dashboards'
 
 interface DrawerProps {
   children: React.ReactNode
@@ -8,7 +9,10 @@ interface DrawerProps {
 const DrawerProvider: React.FC<DrawerProps> = ({ children }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(true)
 
+  const { fetchDashboardsCategories } = useDashboards()
+
   const toggleDrawerOpen = (newValue: boolean) => {
+    fetchDashboardsCategories()
     setIsDrawerOpen(newValue)
   }
 

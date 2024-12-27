@@ -4,22 +4,22 @@ export const DarkTheme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: '#1976d2',
-      contrastText: '#fff'
+      main: '#0DA64F',
+      contrastText: '#bbb'
     },
     text: {
-      primary: '#fff',
-      secondary: '#444',
+      primary: '#bbb',
+      secondary: '#666',
     },
     background: {
-      default: '#000000',
-      paper: '#111111',
+      default: '#171717',
+      paper: '#212121',
     },
   },
   typography: {
     fontFamily: 'Nunito, Arial, sans-serif',
     allVariants: {
-      color: '#fff',
+      color: '#bbb',
     },
   },
 })

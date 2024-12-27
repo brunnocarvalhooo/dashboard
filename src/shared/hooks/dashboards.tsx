@@ -12,6 +12,7 @@ interface DashboardsProps {
 
 const DashboardsProvider: React.FC<DashboardsProps> = ({ children }) => {
   const [dashboards, setDashboards] = useState<ILSDashboard[]>([])
+  
   const [dashboardsCategories, setDashboardsCategories] = useState<ICategory[]>([])
   
   const [currentDashboard, setCurrentDashboard] = useState<IDashboard>()

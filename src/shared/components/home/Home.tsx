@@ -1,8 +1,10 @@
-import { Button, Typography } from "@mui/material"
+import { Tooltip, Typography } from "@mui/material"
 import { useState } from "react"
 
 import { ModalAddDashboard } from "../modal-add-dashboard/ModalAddDashboard"
-import { CreateDashboardButtonLabel, EmptyContainer } from "."
+import { AddDashboardButton, EmptyContainer } from "./styles"
+
+import { GoPlus } from "react-icons/go";
 
 export const EmptyDashboards = () => {
   const [openModalAddComponent, setOpenModalAddComponent] = useState(false)
@@ -14,19 +16,22 @@ export const EmptyDashboards = () => {
     <>
       <EmptyContainer>
         <Typography
-          variant="h6"
-          color="text.secondary"
+          variant="h4"
+          fontWeight='bold'
+          color="primary.main"
         >
           Bem vindo ao Dashboard
         </Typography>
 
-        <Button onClick={() => handleChangeOpenModalAddComponent(true)}>
-          <CreateDashboardButtonLabel
-            variant="caption"
-            textTransform='none'
-            textAlign='left'
-          >Clique aqui para criar um novo dashboard</CreateDashboardButtonLabel>
-        </Button>
+        <Tooltip title='Criar novo dashboard' placement="bottom">
+
+          <AddDashboardButton
+            onClick={() => handleChangeOpenModalAddComponent(true)}
+          >
+            <GoPlus />
+          </AddDashboardButton>
+        </Tooltip>
+
 
       </EmptyContainer>
 

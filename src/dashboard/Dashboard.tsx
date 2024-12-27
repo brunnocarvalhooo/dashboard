@@ -214,7 +214,7 @@ export const Dashboard = () => {
           <ActionsSpeedDial
             ariaLabel="Dashboard actions SpeedDial "
             direction="down"
-            sx={{ position: 'fixed', top: '12px', right: '12px' }}
+            sx={{ position: 'fixed', top: '12px', right: '16px' }}
             icon={<SpeedDialIcon />}
           >
             {speedDialActions.map((action) => (

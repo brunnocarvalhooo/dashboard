@@ -1,28 +1,29 @@
 import Box from '@mui/material/Box'
 
-import { Button, Collapse, Divider, IconButton, List, ListItemText, Tooltip, Typography } from '@mui/material'
+import { Button, Collapse, Divider, IconButton, List, ListItemText, Tooltip, Typography, useTheme } from '@mui/material'
 
 import { useDrawer } from '../../contexts/drawer'
 import { ChildrenContainer, DrawerContentContainer, MenuButton, StyledDrawer, StyledListItemButton } from './styles'
 
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
-import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize'
-import LightModeIcon from '@mui/icons-material/LightMode'
-import DarkModeIcon from '@mui/icons-material/DarkMode'
+import { MdKeyboardArrowLeft } from "react-icons/md";
+import { MdAddChart } from "react-icons/md";
+import { MdOutlineLightMode } from "react-icons/md";
+import { MdOutlineDarkMode } from "react-icons/md";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
-import BuildIcon from '@mui/icons-material/Build'
+import { GrConfigure } from "react-icons/gr";
+import { SlOptionsVertical } from "react-icons/sl";
 
 import { useAppTheme } from '../../contexts/theme'
 import { ModalAddDashboard } from '../modal-add-dashboard/ModalAddDashboard'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { getContrastColor, truncateText } from '../../utils/masks'
 import { VIconButton } from '../interface'
 import { useDashboards } from '../../contexts/dashboards'
 import { CategoryChip } from '../interface/chip/category-chip/CategoryChip'
 import { Dashboard } from '../../../models/local-strorage/dashboards'
 import { storage } from '../../../models'
-import { CreateDashboardButtonLabel, EmptyContainer } from '../home'
+import { EmptyContainer } from '../home/styles'
 
 export const DRAWER_WIDTH = 260
 
@@ -33,14 +34,17 @@ type IMenuSideBarProps = {
 export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
   const { isDrawerOpen, toggleDrawerOpen } = useDrawer()
 
+  const theme = useTheme()
+
   const { themeName, toggleTheme } = useAppTheme()
 
   const {
     dashboards,
     handleChangeCurrentDashboard,
     dashboardsCategories,
-    fetchDashboardsCategories
   } = useDashboards()
+
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   const [openModalAddDashboard, setOpenModalAddDashboard] = useState(false)
   const handleChangeOpenModalAddDashboard = (newValue: boolean) => {
@@ -71,10 +75,6 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
     }
   }
 
-  useEffect(() => {
-    fetchDashboardsCategories()
-  }, [fetchDashboardsCategories, isDrawerOpen])
-
   return (
     <>
       <Box position='relative'>
@@ -87,18 +87,21 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
             <Box display='flex' justifyContent='space-between' alignItems='center' py='12px'>
               <Tooltip title='Novo dashboard' placement='right'>
                 <VIconButton
-                  icon={<DashboardCustomizeIcon />}
+                  icon={<MdAddChart size={24} color={theme.palette.text.primary} />}
                   onClick={() => handleChangeOpenModalAddDashboard(true)} size='small'
                 />
               </Tooltip>
 
               <VIconButton
-                icon={themeName === 'light' ? <LightModeIcon /> : <DarkModeIcon />}
+                icon={themeName === 'light' ?
+                  <MdOutlineLightMode size={24} color={theme.palette.text.primary} /> :
+                  <MdOutlineDarkMode size={24} color={theme.palette.text.primary} />
+                }
                 onClick={toggleTheme} size='small'
               />
             </Box>
 
-            <Divider />
+            <Divider sx={{ opacity: '0.4' }} />
 
             <Box mt={1}>
               <Box mb={1}>
@@ -118,7 +121,7 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
 
                   <Tooltip title='Gerenciar categorias de dashboard' placement='right'>
                     <IconButton size='small'>
-                      <BuildIcon sx={{ fontSize: '0.7em' }} />
+                      <GrConfigure size={12} color={theme.palette.text.primary} />
                     </IconButton>
                   </Tooltip>
                 </Box>
@@ -140,7 +143,7 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
                         />
                       )) : (
                         <Typography
-                          variant='body2'
+                          fontSize='0.7rem'
                           color='text.secondary'
                           textAlign='left'
                         >Nenhuma categoria de dashboard disponivel</Typography>
@@ -164,28 +167,55 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
                 </Box>
                 <Collapse in={openDashboardsCollapse} timeout="auto" unmountOnExit>
                   {dashboards.length > 0 ? (
-                    <List disablePadding>
-                      {dashboards.map((dashboard, i) => (
-                        <StyledListItemButton
-                          key={i}
-                          onClick={() => handleSelectDashboard(dashboard.id)}
-                        >
-                          <ListItemText
-                            primary={
-                              <Typography
-                                color='text.primary'
-                                variant='body2'
-                                noWrap
-                              >{dashboard.name}</Typography>
-                            }
-                          />
-                        </StyledListItemButton>
-                      ))}
-                    </List>
+                    <>
+                      <List disablePadding>
+                        {dashboards.map((dashboard, i) => (
+                          <Box
+                            key={i}
+                            display="flex"
+                            alignItems="center"
+                            gap='4px'
+                            onMouseEnter={() => setHoveredIndex(i)}
+                            onMouseLeave={() => setHoveredIndex(null)}
+                          >
+                            <StyledListItemButton
+                              onClick={() => handleSelectDashboard(dashboard.id)}
+                            >
+                              <ListItemText
+                                primary={
+                                  <Box>
+                                    <Typography
+                                      color="text.primary"
+                                      variant="body2"
+                                      noWrap
+                                      flex={1}
+                                    >
+                                      {dashboard.name}
+                                    </Typography>
+                                  </Box>
+                                }
+                              />
+                            </StyledListItemButton>
+
+                            {hoveredIndex === i && (
+                              <VIconButton
+                                sx={{ height: '38px' }}
+                                icon={
+                                  <SlOptionsVertical
+                                    size={14}
+                                    color={theme.palette.text.primary}
+                                  />
+                                }
+                              />
+                            )}
+                          </Box>
+                        ))}
+                      </List>
+                    </>
                   ) : (
                     <EmptyContainer sx={{ alignItems: 'flex-start' }}>
                       <Typography
-                        variant='body2'
+                        fontSize='0.7rem'
                         color='text.secondary'
                         textAlign='left'
                       >
@@ -193,11 +223,11 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
                       </Typography>
 
                       <Button onClick={() => handleChangeOpenModalAddDashboard(true)}>
-                        <CreateDashboardButtonLabel
+                        <Typography
                           variant="caption"
                           textTransform='none'
                           textAlign='left'
-                        >Clique aqui para criar um novo dashboard</CreateDashboardButtonLabel>
+                        >Criar novo dashboard</Typography>
                       </Button>
                     </EmptyContainer>
                   )}
@@ -218,7 +248,7 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
               transform: isDrawerOpen ? 'rotate(0deg)' : 'rotate(180deg)',
             }}
           >
-            <ArrowBackIosNewIcon />
+            <MdKeyboardArrowLeft size={26} color={theme.palette.text.primary} />
           </MenuButton>
         </Tooltip>
 

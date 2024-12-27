@@ -12,13 +12,13 @@ export const APP_NAME = 'Dashboard'
 
 const AppProvider: React.FC<Props> = ({ children }) => (
   <AppThemeProvider>
-    <DrawerProvider>
-      <DashboardsProvider>
+    <DashboardsProvider>
+      <DrawerProvider>
         <MenuSideBar>
           {children}
         </MenuSideBar>
-      </DashboardsProvider>
-    </DrawerProvider>
+      </DrawerProvider>
+    </DashboardsProvider>
   </AppThemeProvider>
 )
 

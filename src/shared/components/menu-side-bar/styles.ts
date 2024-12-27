@@ -6,6 +6,7 @@ import { borderColor } from "../interface/dialog/styles"
 export const StyledDrawer = styled(Drawer)(({ theme }) => ({
   '& .MuiDrawer-paper': {
     width: `${DRAWER_WIDTH}px`,
+    borderRight: '0px',
 
     '&::-webkit-scrollbar': {
       width: '8px',
@@ -41,7 +42,6 @@ export const MenuButton = styled(IconButton)(({ theme }) => ({
   top: '12px',
   left: `calc(${DRAWER_WIDTH}px + 16px)`,
   background: theme.palette.background.paper,
-  border: '1px solid',
   borderColor: borderColor(theme.palette.mode),
   color: theme.palette.primary.contrastText,
 
@@ -52,7 +52,9 @@ export const MenuButton = styled(IconButton)(({ theme }) => ({
 
 export const StyledListItemButton = styled(ListItemButton)(() => ({
   height: '38px',
-  borderRadius: '8px'
+  borderRadius: '8px',
+  paddingInline: '8px',
+  transition: 'all ease 0.1s'
 }))
 
 export const ChildrenContainer = styled(Box)(({ theme }) => ({
@@ -61,8 +63,8 @@ export const ChildrenContainer = styled(Box)(({ theme }) => ({
   flex: 1,
 
   '&::-webkit-scrollbar': {
-    width: '4px',
-    height: '4px',
+    width: '8px',
+    height: '8px',
   },
   '&::-webkit-scrollbar-thumb': {
     backgroundColor:

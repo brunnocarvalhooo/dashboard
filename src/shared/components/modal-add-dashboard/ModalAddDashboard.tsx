@@ -75,8 +75,9 @@ export const ModalAddDashboard = ({ open, handleChangeOpen }: Props) => {
         <TextField
           value={name}
           onChange={(e) => setName(e.target.value)}
+          variant="standard"
           size="small"
-          label='Nome'
+          placeholder='Nome'
           fullWidth
         />
       </Box>

@@ -33,7 +33,6 @@ export const VDialog = ({
       open={open}
       onClose={handleClose}
       TransitionComponent={SlideUpTransition}
-      hideBackdrop
       sx={{
         '& .MuiDialog-paper': {
           borderRadius: '12px',
@@ -52,8 +51,7 @@ export const VDialog = ({
       <StyledDialogContent
         sx={{
           p: actions ? '0px 16px' : summary ? '0px 16px' : '16px',
-          borderTop: summary ? undefined : '1px solid',
-          borderBottom: actions ? undefined : '1px solid',
+          // borderTop: summary ? undefined : '1px solid',
           borderColor: borderColor(theme.palette.mode),
           borderRadius: actions
             ? summary
