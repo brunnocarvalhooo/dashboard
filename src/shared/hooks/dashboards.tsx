@@ -4,6 +4,7 @@ import { IDashboard } from '../dtos/dashboard'
 import { ILSDashboard } from '../../models/dashboard.model'
 import { storage } from '../../models'
 import { ICategory } from '../dtos/categories'
+import { Target } from '../../services/local-strorage/categories'
 
 interface DashboardsProps {
   children: React.ReactNode
@@ -31,12 +32,13 @@ const DashboardsProvider: React.FC<DashboardsProps> = ({ children }) => {
   }
 
   const fetchDashboardsCategories = () => {
-    const dashboardList = storage.dashboards.getCategories()
+    const dashboardList = storage.dashboards.getCategories(Target.DASHBOARD)
     setDashboardsCategories(dashboardList)
   }
 
   useEffect(() => {
     fetchDashboards()
+    fetchDashboardsCategories()
   }, [])
 
   return (

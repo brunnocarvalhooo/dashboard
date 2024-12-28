@@ -1,5 +1,11 @@
 import { ILS } from "..";
 import { ICategoryFactory, ILSComponentCategories, ILSDashboardCategories } from "../../../models/category.model"
+import { v4 as uuidv4 } from 'uuid';
+
+export enum Target {
+  COMPONENT = 'component_categories',
+  DASHBOARD = 'dashboard_categories'
+}
 
 export class LSCategory implements ICategoryFactory {
   private storage: ILS;
@@ -11,41 +17,37 @@ export class LSCategory implements ICategoryFactory {
   public create(
     name: string,
     color: string,
-    target: 'component_categories' | 'dashboard_categories',
-    id_target?: number
+    target: Target,
+    id_target?: string
   ): void {
     const { categories, ...rest } = this.storage.get()
 
     const targetCategory =
-      target === 'component_categories'
+      target === Target.COMPONENT
         ? rest.component_categories
         : rest.dashboard_categories
 
-    const newCategoryId = categories.length
-      ? categories[categories.length - 1].id + 1
-      : 1
+    const newCategoryId = uuidv4()
 
     categories.push({ id: newCategoryId, name, color })
 
-    if (id_target) {
-      const newRelationId = targetCategory.length
-        ? targetCategory[targetCategory.length - 1].id + 1
-        : 1
 
-      if (target === 'component_categories') {
-        (targetCategory as ILSComponentCategories[]).push({
-          id: newRelationId,
-          id_component: id_target,
-          id_category: newCategoryId,
-        })
-      } else {
-        (targetCategory as ILSDashboardCategories[]).push({
-          id: newRelationId,
-          id_dashboard: id_target,
-          id_category: newCategoryId,
-        })
-      }
+    const newRelationId = uuidv4()
+
+    if (target === Target.COMPONENT) {
+      (targetCategory as ILSComponentCategories[]).push({
+        id: newRelationId,
+        id_component: id_target || target,
+        id_category: newCategoryId,
+      })
+    } else {
+      (targetCategory as ILSDashboardCategories[]).push({
+        id: newRelationId,
+        id_dashboard: id_target || target,
+        id_category: newCategoryId,
+      })
     }
+
 
     this.storage.set({
       ...rest,

@@ -136,15 +136,15 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
                 <Collapse in={openCategoryCollapse} timeout="auto" unmountOnExit>
                   <Box mt={0.5}>
                     {dashboardsCategories.length > 0 ?
-                      dashboardsCategories.map((categorie, i) => (
+                      dashboardsCategories.map((category, i) => (
                         <CategoryChip
                           key={i}
-                          categoryColor={categorie.color}
+                          categoryColor={category.color}
                           label={
                             <Typography
                               variant='caption'
-                              color={getContrastColor(categorie.color)}
-                            >{truncateText(categorie.name, 12)}</Typography>
+                              color={getContrastColor(category.color)}
+                            >{truncateText(category.name, 12)}</Typography>
                           }
                           size="small"
                         />

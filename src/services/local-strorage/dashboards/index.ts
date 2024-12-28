@@ -1,6 +1,7 @@
 import { ILS } from ".."
 import { IDashboardFactory } from "../../../models/dashboard.model"
 import { v4 as uuidv4 } from 'uuid';
+import { Target } from "../categories";
 
 export class LSDashboard implements IDashboardFactory {
   private storage: ILS
@@ -74,7 +75,7 @@ export class LSDashboard implements IDashboardFactory {
     return dashboards
   }
 
-  public getCategories() {
+  public getCategories(target: Target) {
     const { dashboard_categories, categories } = this.storage.get()
 
     const relatedDashboardCategoryIds = dashboard_categories
@@ -84,7 +85,17 @@ export class LSDashboard implements IDashboardFactory {
       relatedDashboardCategoryIds.includes(category.id)
     )
 
-    return relatedCategories
+    const findedCategoriesWithotRelation = dashboard_categories
+      .filter((category) =>
+        category.id_dashboard === target
+      )
+      .map((relation) => relation.id_category)
+
+    const categoriesWithotRelation = categories.filter((category) =>
+      findedCategoriesWithotRelation.includes(category.id)
+    )
+
+    return { ...relatedCategories, ...categoriesWithotRelation }
   }
 
   public delete(id_dashboard: string) {
