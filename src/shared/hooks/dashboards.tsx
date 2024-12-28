@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { DashboardsContext } from '../contexts/dashboards'
 import { IDashboard } from '../dtos/dashboard'
-import { Dashboard } from '../../models/local-strorage/dashboards'
-import { ILSDashboard } from '../../models/local-strorage/dashboards/dashboard.model'
+import { ILSDashboard } from '../../models/dashboard.model'
 import { storage } from '../../models'
 import { ICategory } from '../dtos/categories'
 
@@ -18,7 +17,7 @@ const DashboardsProvider: React.FC<DashboardsProps> = ({ children }) => {
   const [currentDashboard, setCurrentDashboard] = useState<IDashboard>()
 
   const handleChangeCurrentDashboard = useCallback((
-    updateFn: (prev: IDashboard | undefined) => IDashboard,
+    updateFn: (prev: IDashboard | undefined) => IDashboard | undefined,
   ) => {
     setCurrentDashboard((prev) => {
       const updatedRows = updateFn(prev)
@@ -27,14 +26,12 @@ const DashboardsProvider: React.FC<DashboardsProps> = ({ children }) => {
   }, [])
   
   const fetchDashboards = () => {
-    const dashboard = new Dashboard(storage)
-    const dashboardList = dashboard.list()
+    const dashboardList = storage.dashboards.list()
     setDashboards(dashboardList)
   }
 
   const fetchDashboardsCategories = () => {
-    const dashboard = new Dashboard(storage)
-    const dashboardList = dashboard.getCategories()
+    const dashboardList = storage.dashboards.getCategories()
     setDashboardsCategories(dashboardList)
   }
 

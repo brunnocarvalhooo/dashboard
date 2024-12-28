@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react"
 import { IDashboard } from "../dtos/dashboard"
-import { ILSDashboard } from "../../models/local-strorage/dashboards/dashboard.model"
+import { ILSDashboard } from "../../models/dashboard.model"
 import { ICategory } from "../dtos/categories"
 
 export interface IDashboardsContextData {
@@ -9,7 +9,7 @@ export interface IDashboardsContextData {
   fetchDashboards: () => void
   fetchDashboardsCategories: () => void
   currentDashboard: IDashboard | undefined
-  handleChangeCurrentDashboard: (updateFn: (prev: IDashboard | undefined) => IDashboard) => void
+  handleChangeCurrentDashboard: (updateFn: (prev: IDashboard | undefined) => IDashboard | undefined) => void
 }
 
 export const DashboardsContext = createContext({} as IDashboardsContextData)

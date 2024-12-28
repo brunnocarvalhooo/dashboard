@@ -32,7 +32,7 @@ export const StyledDrawer = styled(Drawer)(({ theme }) => ({
 }))
 
 export const DrawerContentContainer = styled(Box)(() => ({
-  paddingInline: '12px',
+  paddingInline: '8px',
   paddingBottom: '8px',
 }))
 
@@ -40,7 +40,7 @@ export const MenuButton = styled(IconButton)(({ theme }) => ({
   position: 'absolute',
   zIndex: 999,
   top: '12px',
-  left: `calc(${DRAWER_WIDTH}px + 16px)`,
+  left: `calc(${DRAWER_WIDTH}px + 12px)`,
   background: theme.palette.background.paper,
   borderColor: borderColor(theme.palette.mode),
   color: theme.palette.primary.contrastText,
@@ -54,7 +54,7 @@ export const StyledListItemButton = styled(ListItemButton)(() => ({
   height: '38px',
   borderRadius: '8px',
   paddingInline: '8px',
-  transition: 'all ease 0.1s'
+  transition: 'all ease 0.3s'
 }))
 
 export const ChildrenContainer = styled(Box)(({ theme }) => ({

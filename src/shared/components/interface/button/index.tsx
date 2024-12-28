@@ -8,7 +8,7 @@ import { StyledButton } from './styles'
 type Props = ButtonProps & {
   label: React.ReactNode
   loading?: boolean
-  color: 'primary' | 'secondary'
+  color: 'primary' | 'secondary' | 'error'
 }
 
 export const VButton: React.FC<Props> = ({

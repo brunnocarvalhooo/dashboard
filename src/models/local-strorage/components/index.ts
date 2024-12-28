@@ -1,24 +1,20 @@
-import { LS } from ".."
+import { ILS } from "..";
+import { IComponentFactory } from "../../component.model"
 
-export interface IComponentFactory {
-  create(
-    title: string,
-    width: number,
-    height: number,
-    id_dashboard: number
-  ): void
-}
+export class LSComponent implements IComponentFactory {
+  private storage: ILS;
 
-export class Component implements IComponentFactory {
+  constructor(storage: ILS) {
+    this.storage = storage;
+  }
+
   public create(
     title: string,
     width: number,
     height: number,
     id_dashboard: number
   ): void {
-    const storage = new LS()
-
-    const { components, ...rest } = storage.get()
+    const { components, ...rest } = this.storage.get()
 
     const newId = components.length
       ? components[components.length - 1].id + 1
@@ -33,6 +29,6 @@ export class Component implements IComponentFactory {
       content: '',
     })
 
-    storage.set({ ...rest, components })
+    this.storage.set({ ...rest, components })
   }
 }

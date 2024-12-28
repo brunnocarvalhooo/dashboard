@@ -3,7 +3,6 @@ import { Box, TextField, Typography } from "@mui/material"
 import { VDialog } from "../interface/dialog"
 import { VButton } from "../interface"
 import { useState } from "react"
-import { Dashboard } from "../../../models/local-strorage/dashboards"
 import { storage } from "../../../models"
 import { useDashboards } from "../../contexts/dashboards"
 import { useDrawer } from "../../contexts/drawer"
@@ -31,13 +30,11 @@ export const ModalAddDashboard = ({ open, handleChangeOpen }: Props) => {
 
   const handleCreateDashboard = () => {
     try {
-      const dashboard = new Dashboard(storage)
-
-      const newDashboardId = dashboard.create(name)
+      const newDashboardId = storage.dashboards.create(name)
 
       fetchDashboards()
 
-      const newDashboard = dashboard.get(newDashboardId)
+      const newDashboard = storage.dashboards.get(newDashboardId)
 
       toggleDrawerOpen(false)
 

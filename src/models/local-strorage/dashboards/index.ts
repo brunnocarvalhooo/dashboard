@@ -1,20 +1,11 @@
-import { ILS, LS } from ".."
-import { IDashboard } from "../../../shared/dtos/dashboard"
-import { ILSCategory } from "../categories/category.model"
-import { ILSDashboard } from "./dashboard.model"
+import { ILS } from ".."
+import { IDashboardFactory } from "../../dashboard.model"
 
-export interface IDashboardFactory {
-  create(name: string): number
-  get(id_dashboard: number): IDashboard | undefined
-  list(): ILSDashboard[]
-  getCategories(): ILSCategory[]
-}
-
-export class Dashboard implements IDashboardFactory {
-  private storage: ILS;
+export class LSDashboard implements IDashboardFactory {
+  private storage: ILS
 
   constructor(storage: ILS) {
-    this.storage = storage;
+    this.storage = storage
   }
 
   public create(name: string) {
@@ -78,17 +69,13 @@ export class Dashboard implements IDashboardFactory {
   }
 
   public list() {
-    const storage = new LS()
-
-    const { dashboards } = storage.get()
+    const { dashboards } = this.storage.get()
 
     return dashboards
   }
 
   public getCategories() {
-    const storage = new LS()
-
-    const { dashboard_categories, categories } = storage.get()
+    const { dashboard_categories, categories } = this.storage.get()
 
     const relatedDashboardCategoryIds = dashboard_categories
       .map((relation) => relation.id_category)
@@ -98,5 +85,24 @@ export class Dashboard implements IDashboardFactory {
     )
 
     return relatedCategories
+  }
+
+  public delete(id_dashboard: number) {
+    const { dashboards, dashboard_categories, components, ...rest } = this.storage.get()
+
+    const updatedDashboards = dashboards.filter((dashboard) => dashboard.id !== id_dashboard)
+    const updatedDashboardCategories = dashboard_categories.filter(
+      (category) => category.id_dashboard !== id_dashboard
+    )
+    const updatedComponents = components.filter(
+      (component) => component.id_dashboard !== id_dashboard
+    )
+
+    this.storage.set({
+      ...rest,
+      dashboards: updatedDashboards,
+      dashboard_categories: updatedDashboardCategories,
+      components: updatedComponents,
+    })
   }
 }

@@ -1,25 +1,21 @@
-import { LS } from ".."
-import { ILSComponentCategories, ILSDashboardCategories } from "./category.model"
+import { ILS } from "..";
+import { ICategoryFactory, ILSComponentCategories, ILSDashboardCategories } from "../../category.model"
 
-export interface ICategoryFactory {
-  create(
-    name: string,
-    color: string,
-    target: 'component_categories' | 'dashboard_categories',
-    id_target?: number
-  ): void 
-}
+export class LSCategory implements ICategoryFactory {
+  private storage: ILS;
 
-export class Category implements ICategoryFactory {
+  constructor(storage: ILS) {
+    this.storage = storage;
+  }
+
   public create(
     name: string,
     color: string,
     target: 'component_categories' | 'dashboard_categories',
     id_target?: number
   ): void {
-    const storage = new LS()
+    const { categories, ...rest } = this.storage.get()
 
-    const { categories, ...rest } = storage.get()
     const targetCategory =
       target === 'component_categories'
         ? rest.component_categories
@@ -51,7 +47,7 @@ export class Category implements ICategoryFactory {
       }
     }
 
-    storage.set({
+    this.storage.set({
       ...rest,
       categories,
       [target]: targetCategory,

@@ -1,6 +1,8 @@
-import { ILSCategory, ILSComponentCategories, ILSDashboardCategories } from "./categories/category.model"
-import { ILSComponent } from "./components/component.model"
-import { ILSDashboard } from "./dashboards/dashboard.model"
+import { ILSDashboard } from "../dashboard.model"
+import { LSDashboard } from "./dashboards"
+import { LSCategory } from "./categories"
+import { ILSCategory, ILSComponentCategories, ILSDashboardCategories } from "../category.model"
+import { ILSComponent } from "../component.model"
 
 export interface ILSModels {
   dashboards: ILSDashboard[],
@@ -27,6 +29,10 @@ export interface ILS {
 
 export class LS implements ILS {
   private LOCAL_STORAGE_KEY = '@dashboard'
+
+  public dashboards = new LSDashboard(this)
+  public components = new LSCategory(this)
+  public categories = new LSCategory(this)
 
   public get(): ILSModels {
     const lsData = localStorage.getItem(this.LOCAL_STORAGE_KEY)

@@ -22,5 +22,5 @@ const addDashboardSlideInUp = keyframes`
 `
 
 export const AddDashboardButton = styled(IconButton)(() => ({
-  animation: `${addDashboardSlideInUp} 0.2s ease`,
+  animation: `${addDashboardSlideInUp} 0.4s ease`,
 }))
