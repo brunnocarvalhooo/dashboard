@@ -1,19 +1,19 @@
 export interface ILSCategory {
-  id: number
+  id: string
   name: string
   color: string
 }
 
 export interface ILSDashboardCategories {
-  id: number
-  id_category: number
-  id_dashboard: number
+  id: string
+  id_category: string
+  id_dashboard: string
 }
 
 export interface ILSComponentCategories {
-  id: number
-  id_category: number
-  id_component: number
+  id: string
+  id_category: string
+  id_component: string
 }
 
 export interface ICategoryFactory {
@@ -21,6 +21,6 @@ export interface ICategoryFactory {
     name: string,
     color: string,
     target: 'component_categories' | 'dashboard_categories',
-    id_target?: number
+    id_target?: string
   ): void 
 }

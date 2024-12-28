@@ -6,7 +6,7 @@ export interface IComponentContent {
 }
 
 export interface IComponent {
-  id: number
+  id: string
   title?: string,
   width: number
   height: number

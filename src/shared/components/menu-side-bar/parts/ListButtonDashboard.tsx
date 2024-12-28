@@ -12,7 +12,7 @@ import { ConfirmAction } from "../../interface/dialog/ConfirmAction"
 
 type Props = {
   dashboard: ILSDashboard
-  handleSelectDashboard: (id_dashboard: number) => void
+  handleSelectDashboard: (id_dashboard: string) => void
 }
 
 export const ListButtonDashboard = ({ dashboard, handleSelectDashboard }: Props) => {

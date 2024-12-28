@@ -2,7 +2,7 @@ import { ICategory } from "./categories"
 import { IComponent } from "./components"
 
 export interface IDashboard {
-  id: number
+  id: string
   name: string
   categories: ICategory[]
   components: IComponent[]

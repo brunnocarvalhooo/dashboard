@@ -14,16 +14,17 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import { GrConfigure } from "react-icons/gr";
 
 import { useAppTheme } from '../../contexts/theme'
-import { ModalAddDashboard } from '../modal-add-dashboard/ModalAddDashboard'
+import { ModalAddDashboard } from './components/modal-add-dashboard/ModalAddDashboard'
 import { useState } from 'react'
 import { getContrastColor, truncateText } from '../../utils/masks'
 import { VButton, VIconButton } from '../interface'
 import { useDashboards } from '../../contexts/dashboards'
 import { CategoryChip } from '../interface/chip/category-chip/CategoryChip'
-import { LSDashboard } from '../../../models/local-strorage/dashboards'
+import { LSDashboard } from '../../../services/local-strorage/dashboards'
 import { storage } from '../../../models'
 import { EmptyContainer } from '../home/styles'
 import { ListButtonDashboard } from './parts/ListButtonDashboard';
+import { ModalManageDashboardCategories } from './components/ModalManageDashboardCategories';
 
 export const DRAWER_WIDTH = 260
 
@@ -49,6 +50,11 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
     setOpenModalAddDashboard(newValue)
   }
 
+  const [openModalManageDashboardCategories, setOpenModalManageDashboardCategories] = useState(false)
+  const handleChangeOpenModalManageDashboardCategories = (newValue: boolean) => {
+    setOpenModalManageDashboardCategories(newValue)
+  }
+
   const [openCategoryCollapse, setOpenCategoryCollapse] = useState(true)
   const handleChangeOpenCategoryCollapse = (newValue: boolean) => {
     setOpenCategoryCollapse(newValue)
@@ -59,7 +65,7 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
     setOpenDashboardsCollapse(newValue)
   }
 
-  const handleSelectDashboard = (id_dashboard: number) => {
+  const handleSelectDashboard = (id_dashboard: string) => {
     const dashboard = new LSDashboard(storage)
 
     const selectedDashboard = dashboard.get(id_dashboard)
@@ -118,7 +124,10 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
                   </Box>
 
                   <Tooltip title='Gerenciar categorias de dashboard' placement='right'>
-                    <IconButton size='small'>
+                    <IconButton
+                      size='small'
+                      onClick={() => handleChangeOpenModalManageDashboardCategories(true)}
+                    >
                       <GrConfigure size={12} color={theme.palette.text.primary} />
                     </IconButton>
                   </Tooltip>
@@ -243,6 +252,11 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
       <ModalAddDashboard
         open={openModalAddDashboard}
         handleChangeOpen={handleChangeOpenModalAddDashboard}
+      />
+
+      <ModalManageDashboardCategories
+        open={openModalManageDashboardCategories}
+        handleChangeOpen={handleChangeOpenModalManageDashboardCategories}
       />
     </>
   )

@@ -1,11 +1,12 @@
 export interface ILSDashboard {
-  id: number
+  id: string
   name: string
+  created_at: string
 }
 
 export interface IDashboardFactory {
-  create(name: string): number
-  get(id_dashboard: number): IDashboard | undefined
+  create(name: string): string
+  get(id_dashboard: string): IDashboard | undefined
   list(): ILSDashboard[]
   getCategories(): ILSCategory[]
 }

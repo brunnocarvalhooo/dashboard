@@ -1,11 +1,11 @@
 import { Box, TextField, Typography } from "@mui/material"
 
-import { VDialog } from "../interface/dialog"
-import { VButton } from "../interface"
+import { VDialog } from "../../../interface/dialog"
+import { VButton } from "../../../interface"
 import { useState } from "react"
-import { storage } from "../../../models"
-import { useDashboards } from "../../contexts/dashboards"
-import { useDrawer } from "../../contexts/drawer"
+import { storage } from "../../../../../models"
+import { useDashboards } from "../../../../contexts/dashboards"
+import { useDrawer } from "../../../../contexts/drawer"
 
 type Props = {
   open: boolean,

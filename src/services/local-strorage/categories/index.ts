@@ -1,5 +1,5 @@
 import { ILS } from "..";
-import { ICategoryFactory, ILSComponentCategories, ILSDashboardCategories } from "../../category.model"
+import { ICategoryFactory, ILSComponentCategories, ILSDashboardCategories } from "../../../models/category.model"
 
 export class LSCategory implements ICategoryFactory {
   private storage: ILS;

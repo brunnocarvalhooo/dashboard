@@ -1,8 +1,8 @@
-import { ILSDashboard } from "../dashboard.model"
+import { ILSDashboard } from "../../models/dashboard.model"
 import { LSDashboard } from "./dashboards"
 import { LSCategory } from "./categories"
-import { ILSCategory, ILSComponentCategories, ILSDashboardCategories } from "../category.model"
-import { ILSComponent } from "../component.model"
+import { ILSCategory, ILSComponentCategories, ILSDashboardCategories } from "../../models/category.model"
+import { ILSComponent } from "../../models/component.model"
 
 export interface ILSModels {
   dashboards: ILSDashboard[],

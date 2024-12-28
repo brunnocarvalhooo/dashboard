@@ -1,3 +1,3 @@
-import { LS } from "./local-strorage";
+import { LS } from "../services/local-strorage";
 
 export const storage = new LS()

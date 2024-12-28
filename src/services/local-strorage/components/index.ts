@@ -1,5 +1,6 @@
 import { ILS } from "..";
-import { IComponentFactory } from "../../component.model"
+import { IComponentFactory } from "../../../models/component.model"
+import { v4 as uuidv4 } from 'uuid';
 
 export class LSComponent implements IComponentFactory {
   private storage: ILS;
@@ -12,13 +13,11 @@ export class LSComponent implements IComponentFactory {
     title: string,
     width: number,
     height: number,
-    id_dashboard: number
+    id_dashboard: string
   ): void {
     const { components, ...rest } = this.storage.get()
 
-    const newId = components.length
-      ? components[components.length - 1].id + 1
-      : 1
+    const newId = uuidv4()
 
     components.push({
       id: newId,

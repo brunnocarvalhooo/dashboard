@@ -1,5 +1,6 @@
 import { ILS } from ".."
-import { IDashboardFactory } from "../../dashboard.model"
+import { IDashboardFactory } from "../../../models/dashboard.model"
+import { v4 as uuidv4 } from 'uuid';
 
 export class LSDashboard implements IDashboardFactory {
   private storage: ILS
@@ -11,13 +12,12 @@ export class LSDashboard implements IDashboardFactory {
   public create(name: string) {
     const { dashboards, ...rest } = this.storage.get()
 
-    const newId = dashboards.length
-      ? dashboards[dashboards.length - 1].id + 1
-      : 1
+    const newId = uuidv4();
 
     dashboards.push({
       id: newId,
       name,
+      created_at: new Date().toISOString()
     })
 
     this.storage.set({ ...rest, dashboards })
@@ -25,7 +25,7 @@ export class LSDashboard implements IDashboardFactory {
     return newId
   }
 
-  public get(id_dashboard: number) {
+  public get(id_dashboard: string) {
     const { dashboards, dashboard_categories, categories, components, component_categories } = this.storage.get()
 
     const dashboard = dashboards.find((dashboard) => dashboard.id === id_dashboard)
@@ -87,7 +87,7 @@ export class LSDashboard implements IDashboardFactory {
     return relatedCategories
   }
 
-  public delete(id_dashboard: number) {
+  public delete(id_dashboard: string) {
     const { dashboards, dashboard_categories, components, ...rest } = this.storage.get()
 
     const updatedDashboards = dashboards.filter((dashboard) => dashboard.id !== id_dashboard)
