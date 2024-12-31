@@ -4,7 +4,22 @@ export interface ILSCategory {
   color: string
 }
 
-export interface ILSDashboardCategories {
+export interface IDashboardsCategoriesFactory {
+  create(
+    name: string,
+    color: string,
+    id_dashboards: string[]
+  ): void
+  update(
+    id_category: string,
+    name: string,
+    color: string,
+    id_dashboards: string[]
+  ): void
+  delete(id_category: string): void
+}
+
+export interface ILSDashboardsCategories {
   id: string
   id_category: string
   id_dashboard: string
@@ -21,6 +36,6 @@ export interface ICategoryFactory {
     name: string,
     color: string,
     target: 'component_categories' | 'dashboard_categories',
-    id_target?: string
+    targets?: [string]
   ): void 
 }

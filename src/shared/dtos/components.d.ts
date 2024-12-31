@@ -1,4 +1,4 @@
-import { ICategory } from "./categories"
+import { ILSCategory } from "../../models/category.model"
 
 export interface IComponentContent {
   key: string,
@@ -10,6 +10,6 @@ export interface IComponent {
   title?: string,
   width: number
   height: number
-  categories: ICategory[]
+  categories: ILSCategory[]
   content: IDashboardComponentContent,
 }

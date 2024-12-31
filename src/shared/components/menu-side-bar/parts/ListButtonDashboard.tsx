@@ -9,6 +9,7 @@ import { FiTrash } from "react-icons/fi"
 import { storage } from "../../../../models"
 import { useDashboards } from "../../../contexts/dashboards"
 import { ConfirmAction } from "../../interface/dialog/ConfirmAction"
+import { FiEdit2 } from "react-icons/fi";
 
 type Props = {
   dashboard: ILSDashboard
@@ -98,11 +99,16 @@ export const ListButtonDashboard = ({ dashboard, handleSelectDashboard }: Props)
         handleClose={handleCloseDashboardOptions}
         items={[
           {
+            label: 'Editar',
+            onClick: () => handleChangeOpenConfirmDelete(true),
+            icon: <FiEdit2 size={14} style={{ marginBottom: '5px' }} />,
+          },
+          {
             label: 'Exluir',
             onClick: () => handleChangeOpenConfirmDelete(true),
-            icon: <FiTrash size={14} color={theme.palette.error.main} style={{ marginBottom: '4px' }} />,
+            icon: <FiTrash size={14} color={theme.palette.error.main} style={{ marginBottom: '5px' }} />,
             labelColor: "error.main"
-          }
+          },
         ]}
       />
 

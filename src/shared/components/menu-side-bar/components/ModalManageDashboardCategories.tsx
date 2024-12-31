@@ -38,6 +38,7 @@ export const ModalManageDashboardCategories = ({ open, handleChangeOpen }: Props
 
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>(undefined)
+  const [relationedDashboards, setRelationedDashboards] = useState<string[]>([])
 
   const [title, setTitle] = useState({
     state: '',
@@ -49,15 +50,28 @@ export const ModalManageDashboardCategories = ({ open, handleChangeOpen }: Props
     setColor(color.hex)
   }
 
-  const handleClose = () => {
-    handleChangeOpen(false)
+  const handleResetStates = useCallback(() => {
     setTitle({
       state: '',
       error: ''
     })
+    setColor(theme.palette.primary.main)
+    setRelationedDashboards([])
+    setSelectedCategory(undefined)
+  }, [theme.palette.primary.main])
+
+  const handleClose = () => {
+    handleChangeOpen(false)
+    handleResetStates()
   }
 
   const handleClickEditCategory = (category: ICategory) => {
+    const dashboardsCategories = dashboards.filter((dashboard) => category.relations.includes(dashboard.id))
+
+    const dashboardsId = dashboardsCategories.map((category) => category.id)
+
+    setRelationedDashboards(dashboardsId)
+
     setTitle((prev) => ({
       ...prev,
       state: category.name
@@ -76,23 +90,28 @@ export const ModalManageDashboardCategories = ({ open, handleChangeOpen }: Props
     }
 
     try {
-      storage.categories.create(
-        title.state,
-        color,
-        'dashboard_categories',
-      )
+      if (selectedCategory) {
+        storage.dashboards_categories.update(
+          selectedCategory,
+          title.state,
+          color,
+          relationedDashboards,
+        )
+      } else {
+        storage.dashboards_categories.create(
+          title.state,
+          color,
+          relationedDashboards,
+        )
+      }
 
       fetchDashboardsCategories()
 
-      setTitle({
-        state: '',
-        error: ''
-      })
-      setColor(theme.palette.primary.main)
+      handleResetStates()
     } catch (error) {
       console.log(error)
     }
-  }, [color, fetchDashboardsCategories, theme.palette.primary.main, title.state])
+  }, [color, fetchDashboardsCategories, handleResetStates, relationedDashboards, selectedCategory, title.state])
 
   return (
     <VDialog
@@ -163,7 +182,7 @@ export const ModalManageDashboardCategories = ({ open, handleChangeOpen }: Props
             </Box>
 
             <VButton
-              onClick={() => handleCreateAndUpdateCategory()}
+              onClick={handleCreateAndUpdateCategory}
               size="small"
               variant="contained"
               color="primary"
@@ -178,16 +197,21 @@ export const ModalManageDashboardCategories = ({ open, handleChangeOpen }: Props
 
           <Box mt={2}>
             <Autocomplete
+              noOptionsText='Nenhum dashboard disponivel'
               multiple
               options={dashboards}
+              value={dashboards.filter((dashboard) => relationedDashboards.includes(dashboard.id))}
               getOptionLabel={(option) => option.name}
-              // defaultValue={[top100Films[13]]}
+              onChange={(_, dashboards) => {
+                const DashboardIds = dashboards.map((dashboard) => dashboard.id)
+
+                setRelationedDashboards(DashboardIds)
+              }}
               renderInput={(params) => (
                 <TextField
                   {...params}
                   variant="standard"
                   label="Dashboards da categoria"
-                // placeholder="Favorites"
                 />
               )}
             />

@@ -1,23 +1,25 @@
 import { ILSDashboard } from "../../models/dashboard.model"
 import { LSDashboard } from "./dashboards"
-import { LSCategory } from "./categories"
-import { ILSCategory, ILSComponentCategories, ILSDashboardCategories } from "../../models/category.model"
+import { ILSCategory, ILSComponentCategories, ILSDashboardsCategories } from "../../models/category.model"
 import { ILSComponent } from "../../models/component.model"
+import { LSDashboardsCategories } from "./dashboards_categories"
 
 export interface ILSModels {
-  dashboards: ILSDashboard[],
-  categories: ILSCategory[],
-  dashboard_categories: ILSDashboardCategories[],
-  components: ILSComponent[],
-  component_categories: ILSComponentCategories[]
+  dashboards: ILSDashboard[]
+  components: ILSComponent[]
+  dashboards_categories: ILSCategory[]
+  dashboards_categories_relation: ILSDashboardsCategories[]
+  component_categories: ILSCategory[]
+  component_categories_relation: ILSComponentCategories[]
 }
 
 const lSModels: ILSModels = {
   dashboards: [],
-  categories: [],
-  dashboard_categories: [],
   components: [],
-  component_categories: []
+  dashboards_categories: [],
+  dashboards_categories_relation: [],
+  component_categories: [],
+  component_categories_relation: []
 }
 
 export interface ILS {
@@ -31,8 +33,7 @@ export class LS implements ILS {
   private LOCAL_STORAGE_KEY = '@dashboard'
 
   public dashboards = new LSDashboard(this)
-  public components = new LSCategory(this)
-  public categories = new LSCategory(this)
+  public dashboards_categories = new LSDashboardsCategories(this)
 
   public get(): ILSModels {
     const lsData = localStorage.getItem(this.LOCAL_STORAGE_KEY)
@@ -62,11 +63,12 @@ export class LS implements ILS {
   private isValid(data: any): data is ILSModels {
     return (
       data &&
-      Array.isArray(data.dashboards) &&
-      Array.isArray(data.categories) &&
-      Array.isArray(data.dashboard_categories) &&
+      Array.isArray(data.component_categories) &&
+      Array.isArray(data.component_categories_relation) &&
       Array.isArray(data.components) &&
-      Array.isArray(data.component_categories)
+      Array.isArray(data.dashboards) &&
+      Array.isArray(data.dashboards_categories) &&
+      Array.isArray(data.dashboards_categories_relation)
     )
   }
 

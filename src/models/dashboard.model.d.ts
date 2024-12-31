@@ -1,4 +1,5 @@
-import { Target } from "../services/local-strorage/categories"
+import { ICategory } from "../shared/dtos/categories"
+import { IDashboard } from "../shared/dtos/dashboard"
 
 export interface ILSDashboard {
   id: string
@@ -10,5 +11,5 @@ export interface IDashboardFactory {
   create(name: string): string
   get(id_dashboard: string): IDashboard | undefined
   list(): ILSDashboard[]
-  getCategories(target: Target): ILSCategory[]
+  getCategories(): ICategory[]
 }

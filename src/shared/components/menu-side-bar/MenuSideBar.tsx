@@ -14,7 +14,7 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import { GrConfigure } from "react-icons/gr";
 
 import { useAppTheme } from '../../contexts/theme'
-import { ModalAddDashboard } from './components/modal-add-dashboard/ModalAddDashboard'
+import { ModalAddDashboard } from './components/ModalAddDashboard'
 import { useState } from 'react'
 import { getContrastColor, truncateText } from '../../utils/masks'
 import { VButton, VIconButton } from '../interface'

@@ -1,11 +1,12 @@
 import { Box, TextField, Typography } from "@mui/material"
 
-import { VDialog } from "../../../interface/dialog"
-import { VButton } from "../../../interface"
+import { VDialog } from "../../interface/dialog"
+import { VButton } from "../../interface"
 import { useState } from "react"
-import { storage } from "../../../../../models"
-import { useDashboards } from "../../../../contexts/dashboards"
-import { useDrawer } from "../../../../contexts/drawer"
+import { storage } from "../../../../models"
+import { useDashboards } from "../../../contexts/dashboards"
+import { useDrawer } from "../../../contexts/drawer"
+import { REQUIRED_ERROR } from "../../../utils/validation-errors"
 
 type Props = {
   open: boolean,
@@ -17,20 +18,33 @@ export const ModalAddDashboard = ({ open, handleChangeOpen }: Props) => {
 
   const { toggleDrawerOpen } = useDrawer()
 
-  const [name, setName] = useState('')
+  const [name, setName] = useState({
+    state: '',
+    error: ''
+  })
 
   const handleClose = () => {
     handleChangeOpen(false)
 
     setTimeout(() => {
-      setName('')
+      setName({
+        error: '',
+        state: '',
+      })
     }, 1000)
-    setName('')
   }
 
   const handleCreateDashboard = () => {
+    if (!name.state) {
+      setName((prev) => ({
+        ...prev,
+        error: REQUIRED_ERROR
+      }))
+      return
+    }
+
     try {
-      const newDashboardId = storage.dashboards.create(name)
+      const newDashboardId = storage.dashboards.create(name.state)
 
       fetchDashboards()
 
@@ -70,8 +84,14 @@ export const ModalAddDashboard = ({ open, handleChangeOpen }: Props) => {
     >
       <Box width='100%' mb={2} mt={3}>
         <TextField
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          error={!!name.error}
+          helperText={name.error}
+          value={name.state}
+          onChange={(e) => setName((prev) => ({
+            ...prev,
+            state: e.target.value,
+            error: prev.error ? '' : prev.error,
+          }))}
           variant="standard"
           size="small"
           placeholder='Nome'

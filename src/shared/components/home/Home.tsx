@@ -1,7 +1,7 @@
 import { Tooltip, Typography } from "@mui/material"
 import { useState } from "react"
 
-import { ModalAddDashboard } from "../menu-side-bar/components/modal-add-dashboard/ModalAddDashboard"
+import { ModalAddDashboard } from "../menu-side-bar/components/ModalAddDashboard"
 import { AddDashboardButton, EmptyContainer } from "./styles"
 
 import { GoPlus } from "react-icons/go";

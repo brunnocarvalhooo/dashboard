@@ -1,9 +1,9 @@
-import { ICategory } from "./categories"
+import { ILSCategory } from "../../models/category.model"
 import { IComponent } from "./components"
 
 export interface IDashboard {
   id: string
   name: string
-  categories: ICategory[]
+  categories: ILSCategory[]
   components: IComponent[]
 }

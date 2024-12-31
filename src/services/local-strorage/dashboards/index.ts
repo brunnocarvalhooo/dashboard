@@ -1,7 +1,6 @@
 import { ILS } from ".."
 import { IDashboardFactory } from "../../../models/dashboard.model"
-import { v4 as uuidv4 } from 'uuid';
-import { Target } from "../categories";
+import { v4 as uuidv4 } from 'uuid'
 
 export class LSDashboard implements IDashboardFactory {
   private storage: ILS
@@ -13,7 +12,7 @@ export class LSDashboard implements IDashboardFactory {
   public create(name: string) {
     const { dashboards, ...rest } = this.storage.get()
 
-    const newId = uuidv4();
+    const newId = uuidv4()
 
     dashboards.push({
       id: newId,
@@ -27,7 +26,14 @@ export class LSDashboard implements IDashboardFactory {
   }
 
   public get(id_dashboard: string) {
-    const { dashboards, dashboard_categories, categories, components, component_categories } = this.storage.get()
+    const {
+      dashboards,
+      dashboards_categories,
+      dashboards_categories_relation,
+      components,
+      component_categories_relation,
+      component_categories
+    } = this.storage.get()
 
     const dashboard = dashboards.find((dashboard) => dashboard.id === id_dashboard)
 
@@ -36,22 +42,22 @@ export class LSDashboard implements IDashboardFactory {
       return undefined
     }
 
-    const relatedDashboardCategoryIds = dashboard_categories
+    const relatedDashboardCategoryIds = dashboards_categories_relation
       .filter((relation) => relation.id_dashboard === id_dashboard)
       .map((relation) => relation.id_category)
 
-    const relatedCategories = categories.filter((category) =>
+    const relatedCategories = dashboards_categories.filter((category) =>
       relatedDashboardCategoryIds.includes(category.id)
     )
 
     const relatedComponents = components
       .filter((component) => component.id_dashboard === id_dashboard)
       .map((component) => {
-        const componentCategoryIds = component_categories
+        const componentCategoryIds = component_categories_relation
           .filter((relation) => relation.id_component === component.id)
           .map((relation) => relation.id_category)
 
-        const componentCategories = categories.filter((category) =>
+        const componentCategories = component_categories.filter((category) =>
           componentCategoryIds.includes(category.id)
         )
 
@@ -75,34 +81,26 @@ export class LSDashboard implements IDashboardFactory {
     return dashboards
   }
 
-  public getCategories(target: Target) {
-    const { dashboard_categories, categories } = this.storage.get()
+  public getCategories() {
+    const { dashboards_categories, dashboards_categories_relation } = this.storage.get()
 
-    const relatedDashboardCategoryIds = dashboard_categories
-      .map((relation) => relation.id_category)
+    return dashboards_categories.map((category) => {
+      const relatedDashboards = dashboards_categories_relation
+        .filter((relation) => relation.id_category === category.id)
+        .map((relation) => relation.id_dashboard)
 
-    const relatedCategories = categories.filter((category) =>
-      relatedDashboardCategoryIds.includes(category.id)
-    )
-
-    const findedCategoriesWithotRelation = dashboard_categories
-      .filter((category) =>
-        category.id_dashboard === target
-      )
-      .map((relation) => relation.id_category)
-
-    const categoriesWithotRelation = categories.filter((category) =>
-      findedCategoriesWithotRelation.includes(category.id)
-    )
-
-    return { ...relatedCategories, ...categoriesWithotRelation }
+      return {
+        ...category,
+        relations: relatedDashboards,
+      }
+    })
   }
-
+  
   public delete(id_dashboard: string) {
-    const { dashboards, dashboard_categories, components, ...rest } = this.storage.get()
+    const { dashboards, dashboards_categories_relation, components, ...rest } = this.storage.get()
 
     const updatedDashboards = dashboards.filter((dashboard) => dashboard.id !== id_dashboard)
-    const updatedDashboardCategories = dashboard_categories.filter(
+    const updatedDashboardCategories = dashboards_categories_relation.filter(
       (category) => category.id_dashboard !== id_dashboard
     )
     const updatedComponents = components.filter(
@@ -112,7 +110,7 @@ export class LSDashboard implements IDashboardFactory {
     this.storage.set({
       ...rest,
       dashboards: updatedDashboards,
-      dashboard_categories: updatedDashboardCategories,
+      dashboards_categories_relation: updatedDashboardCategories,
       components: updatedComponents,
     })
   }
