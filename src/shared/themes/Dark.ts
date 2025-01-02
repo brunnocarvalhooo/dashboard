@@ -8,8 +8,8 @@ export const DarkTheme = createTheme({
       contrastText: '#bbb'
     },
     text: {
-      primary: '#bbb',
-      secondary: '#666',
+      primary: '#fff',
+      secondary: '#aaa',
     },
     background: {
       default: '#171717',

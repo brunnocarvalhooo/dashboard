@@ -2,6 +2,7 @@ export interface ILSCategory {
   id: string
   name: string
   color: string
+  active: boolean
 }
 
 export interface IDashboardsCategoriesFactory {
@@ -17,6 +18,7 @@ export interface IDashboardsCategoriesFactory {
     id_dashboards: string[]
   ): void
   delete(id_category: string): void
+  changeActiveStatus(id_category: string): void
 }
 
 export interface ILSDashboardsCategories {

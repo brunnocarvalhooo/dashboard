@@ -3,4 +3,5 @@ export interface ICategory {
   name: string
   color: string
   relations: string[]
+  active: boolean
 }

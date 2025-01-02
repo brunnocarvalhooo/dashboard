@@ -26,6 +26,7 @@ export class LSDashboardsCategories implements IDashboardsCategoriesFactory {
       id: newId,
       name,
       color,
+      active: true
     })
 
     const updatedRelations = this.createRelations(newId, id_dashboards, dashboards_categories_relation)
@@ -104,6 +105,21 @@ export class LSDashboardsCategories implements IDashboardsCategoriesFactory {
       ...rest,
       dashboards_categories: updatedCategories,
       dashboards_categories_relation: updatedRelations,
+    })
+  }
+
+  public changeActiveStatus(id_category: string) {
+    const { dashboards_categories, ...rest } = this.storage.get()
+
+    const updatedCategories = dashboards_categories.map((category) =>
+      category.id === id_category
+        ? { ...category, active: !category.active }
+        : category
+    )
+
+    this.storage.set({
+      ...rest,
+      dashboards_categories: updatedCategories,
     })
   }
 }

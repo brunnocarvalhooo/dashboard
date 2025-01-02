@@ -11,7 +11,7 @@ type Props = {
 
   title?: string
   customTitle?: React.ReactNode
-  subtitle?: string
+  subtitle?: string | React.ReactNode
 
   onClickConfirmButton: () => void
   labelConfirmButton: string
@@ -36,6 +36,8 @@ export const ConfirmAction = ({
 
   return (
     <VDialog
+      maxWidth='xs'
+      fullWidth
       open={open}
       handleClose={handleClose}
       actions={
@@ -77,6 +79,7 @@ export const ConfirmAction = ({
       summary={customTitle || (
         <Typography
           fontWeight="normal"
+          color='text.primary'
         >
           {title}
         </Typography>

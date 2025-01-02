@@ -120,7 +120,11 @@ export const Dashboard = () => {
     <Container>
       <HeaderContainer>
         <Tooltip title='Menu' placement='bottom-start'>
-          <VIconButton onClick={() => toggleDrawerOpen(!isDrawerOpen)} size='small' icon={<MenuIcon />} />
+          <VIconButton
+            onClick={() => toggleDrawerOpen(!isDrawerOpen)}
+            size='small'
+            icon={<MenuIcon sx={{ color: 'text.primary' }} />}
+          />
         </Tooltip>
 
         {currentDashboard && (

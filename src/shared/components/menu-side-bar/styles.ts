@@ -9,19 +9,19 @@ export const StyledDrawer = styled(Drawer)(({ theme }) => ({
     borderRight: '0px',
 
     '&::-webkit-scrollbar': {
-      width: '8px',
-      height: '8px',
+      width: '6px',
+      height: '6px',
     },
     '&::-webkit-scrollbar-thumb': {
       backgroundColor:
         theme.palette.mode === 'light'
           ? theme.palette.grey[400]
-          : theme.palette.grey[900],
+          : theme.palette.grey[800],
       '&:hover': {
         backgroundColor:
           theme.palette.mode === 'light'
             ? theme.palette.grey[500]
-            : theme.palette.grey[800],
+            : theme.palette.grey[700],
       },
       borderRadius: '12px'
     },
@@ -63,8 +63,8 @@ export const ChildrenContainer = styled(Box)(({ theme }) => ({
   flex: 1,
 
   '&::-webkit-scrollbar': {
-    width: '8px',
-    height: '8px',
+    width: '6px',
+    height: '6px',
   },
   '&::-webkit-scrollbar-thumb': {
     backgroundColor:

@@ -5,17 +5,15 @@ import { Collapse, Divider, IconButton, InputAdornment, List, TextField, Tooltip
 import { useDrawer } from '../../contexts/drawer'
 import { ChildrenContainer, DrawerContentContainer, MenuButton, StyledDrawer } from './styles'
 
-import { MdKeyboardArrowLeft } from "react-icons/md"
+import { MdKeyboardArrowLeft, MdOutlineClose, MdOutlineFilterAlt } from "react-icons/md"
 import { MdAddChart } from "react-icons/md"
-import { MdOutlineLightMode } from "react-icons/md"
-import { MdOutlineDarkMode } from "react-icons/md"
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import { GrConfigure } from "react-icons/gr"
 
 import { useAppTheme } from '../../contexts/theme'
 import { ModalAddDashboard } from './components/ModalAddDashboard'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { getContrastColor, truncateText } from '../../utils/masks'
 import { VButton, VIconButton } from '../interface'
 import { useDashboards } from '../../contexts/dashboards'
@@ -26,8 +24,18 @@ import { EmptyContainer } from '../home/styles'
 import { ListButtonDashboard } from './parts/ListButtonDashboard'
 import { ModalManageDashboardCategories } from './components/ModalManageDashboardCategories'
 import { IoMdSearch } from 'react-icons/io'
+import { ILSDashboard } from '../../../models/dashboard.model'
+import { ICategory } from '../../dtos/categories'
+import { StyledMenu } from '../interface/menu/styles'
+import { RiColorFilterLine } from 'react-icons/ri'
+
+interface ISearchResults {
+  dashboard: ILSDashboard[]
+  dashboardsCategories: ICategory[]
+}
 
 export const DRAWER_WIDTH = 260
+
 
 type IMenuSideBarProps = {
   children: React.ReactNode
@@ -38,13 +46,25 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
 
   const theme = useTheme()
 
-  const { themeName, toggleTheme } = useAppTheme()
+  const { toggleTheme } = useAppTheme()
 
   const {
     dashboards,
     handleChangeCurrentDashboard,
     dashboardsCategories,
+    fetchDashboardsCategories
   } = useDashboards()
+
+  const [search, setSearch] = useState('')
+
+  const [anchorElFilterDashboardsCategories, setAnchorElDashboardsCategories] = useState<null | HTMLElement>(null)
+  const openFilterDashboardsCategories = Boolean(anchorElFilterDashboardsCategories)
+  const handleClickFilterDashboardsCategories = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElDashboardsCategories(event.currentTarget)
+  }
+  const handleCloseFilterDashboardsCategories = () => {
+    setAnchorElDashboardsCategories(null)
+  }
 
   const [maxVisibleCategories, setMaxVisibleCategories] = useState(10)
   const handleChangeMaxVisibleCategories = (operation: '-' | '+') => {
@@ -91,6 +111,31 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
     }
   }
 
+  const handleChangeActiveStatusCategory = (id_category: string) => {
+    try {
+      storage.dashboards_categories.changeActiveStatus(id_category)
+
+      fetchDashboardsCategories()
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const searchResult = useMemo<ISearchResults>(() => {
+    const dashboardsCategoriesResult = dashboardsCategories.filter((category) =>
+      search ? category.name.toLowerCase().includes(search.toLowerCase()) : true
+    )
+
+    const dashboardsResult = dashboards.filter((dashboard) =>
+      search ? dashboard.name.toLowerCase().includes(search.toLowerCase()) : true
+    )
+
+    return {
+      dashboard: dashboardsResult,
+      dashboardsCategories: dashboardsCategoriesResult,
+    }
+  }, [dashboards, dashboardsCategories, search])
+
   return (
     <>
       <Box position='relative'>
@@ -109,17 +154,20 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
               </Tooltip>
 
               <VIconButton
-                icon={themeName === 'light' ?
-                  <MdOutlineLightMode size={24} color={theme.palette.text.primary} /> :
-                  <MdOutlineDarkMode size={24} color={theme.palette.text.primary} />
-                }
+                icon={<RiColorFilterLine size={24} color={theme.palette.text.primary} />}
                 onClick={toggleTheme} size='small'
               />
             </Box>
 
-            <Divider sx={{ opacity: '0.4', mb: 1 }} />
+            <Divider sx={{ opacity: '0.4', mb: 2 }} />
 
             <TextField
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value)
+                handleChangeOpenCategoryCollapse(true)
+                handleChangeOpenDashboardsCollapse(true)
+              }}
               size='small'
               variant='standard'
               fullWidth
@@ -131,6 +179,17 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
                       <IoMdSearch size={22} style={{ paddingBottom: '4px', color: 'text.secondary' }} />
                     </InputAdornment>
                   ),
+                  endAdornment: search && (
+                    <IconButton size='small' onClick={() => setSearch('')}>
+                      <MdOutlineClose
+                        size={20}
+                        style={{
+                          color: 'text.secondary',
+                        }}
+                      />
+                    </IconButton>
+
+                  )
                 },
               }}
             />
@@ -139,41 +198,86 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
               <Box mb={1}>
                 <Box display='flex' alignItems='center'>
                   <Box display='flex' alignItems='center' flex={1} gap={0.5}>
-                    <Typography variant='caption'>Categorias de dashboard ({dashboardsCategories.length})</Typography>
+                    <Typography variant='caption' color='text.primary'>
+                      Categorias de dashboard ({searchResult.dashboardsCategories.length})
+                    </Typography>
                     <IconButton
                       size='small'
                       onClick={() => handleChangeOpenCategoryCollapse(!openCategoryCollapse)}
                     >
                       {openCategoryCollapse ?
-                        <KeyboardArrowUpIcon sx={{ fontSize: '1rem' }} /> :
-                        <KeyboardArrowDownIcon sx={{ fontSize: '1rem' }} />
+                        <KeyboardArrowUpIcon sx={{ fontSize: '1rem', color: 'text.primary' }} /> :
+                        <KeyboardArrowDownIcon sx={{ fontSize: '1rem', color: 'text.primary' }} />
                       }
                     </IconButton>
                   </Box>
 
-                  <Tooltip title='Gerenciar categorias de dashboard' placement='right'>
-                    <IconButton
-                      size='small'
-                      onClick={() => handleChangeOpenModalManageDashboardCategories(true)}
+                  <Box>
+                    <Tooltip title='Filtros' placement='bottom'>
+                      <IconButton
+                        size='small'
+                        id="filter-dashboards-categories-button"
+                        aria-controls={openFilterDashboardsCategories ? 'filter-dashboards-categories-menu' : undefined}
+                        aria-haspopup="true"
+                        aria-expanded={openFilterDashboardsCategories ? 'true' : undefined}
+                        onClick={handleClickFilterDashboardsCategories}
+                      >
+                        <MdOutlineFilterAlt size={16} color={theme.palette.text.secondary} />
+                      </IconButton>
+                    </Tooltip>
+
+                    <StyledMenu
+                      id="filter-dashboards-categories-menu"
+                      aria-labelledby="filter-dashboards-categories-button"
+                      anchorEl={anchorElFilterDashboardsCategories}
+                      open={openFilterDashboardsCategories}
+                      onClose={handleCloseFilterDashboardsCategories}
+                      anchorOrigin={{
+                        vertical: 'top',
+                        horizontal: 'left',
+                      }}
+                      transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'left',
+                      }}
                     >
-                      <GrConfigure size={12} color={theme.palette.text.primary} />
-                    </IconButton>
-                  </Tooltip>
+                      <Box p={1}>
+                        <Typography
+                          variant='body2'
+                        >Categorias de dashboard</Typography>
+                      </Box>
+                    </StyledMenu>
+
+                    <Tooltip title='Gerenciar categorias de dashboard' placement='right'>
+                      <IconButton
+                        size='small'
+                        onClick={() => handleChangeOpenModalManageDashboardCategories(true)}
+                      >
+                        <GrConfigure size={13} color={theme.palette.text.secondary} />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
                 </Box>
 
                 <Collapse in={openCategoryCollapse} timeout="auto" unmountOnExit>
                   <Box mt={0.5}>
-                    {dashboardsCategories.length > 0 ?
-                      dashboardsCategories
+                    {searchResult.dashboardsCategories.length > 0 ?
+                      searchResult.dashboardsCategories
                         .slice(0, maxVisibleCategories)
                         .map((category, i) => (
                           <CategoryChip
+                            onClick={() => handleChangeActiveStatusCategory(category.id)}
                             key={i}
-                            categoryColor={category.color}
+                            categoryColor={category.active ? category.color : theme.palette.background.default}
+                            sx={{
+                              '&:hover': {
+                                background: category.active ? `${category.color}99` : theme.palette.background.paper
+                              }
+                            }}
                             label={
                               <Typography
                                 variant='caption'
-                                color={getContrastColor(category.color)}
+                                color={getContrastColor(category.active ? category.color : theme.palette.background.default)}
                               >{truncateText(category.name, 12)}</Typography>
                             }
                             size="small"
@@ -187,7 +291,7 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
                       )}
                   </Box>
 
-                  {dashboardsCategories.length > 10 && (
+                  {searchResult.dashboardsCategories.length > 10 && (
                     <>
                       <Tooltip title='Mostrar menos' placement='bottom-end'>
                         <IconButton
@@ -201,7 +305,7 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
                       <Tooltip title='Mostrar mais' placement='bottom'>
                         <IconButton
                           size='small'
-                          disabled={maxVisibleCategories >= dashboardsCategories.length}
+                          disabled={maxVisibleCategories >= searchResult.dashboardsCategories.length}
                           onClick={() => handleChangeMaxVisibleCategories('+')}
                         >
                           <KeyboardArrowDownIcon sx={{ fontSize: '1rem' }} />
@@ -214,21 +318,23 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
 
               <Box>
                 <Box display='flex' alignItems='center' mb={0.5} gap={0.5}>
-                  <Typography variant='body2'>Dashboards ({dashboards.length})</Typography>
+                  <Typography variant='body2' color='text.primary'>
+                    Dashboards ({searchResult.dashboard.length})
+                  </Typography>
                   <IconButton
                     size='small'
                     onClick={() => handleChangeOpenDashboardsCollapse(!openDashboardsCollapse)}
                   >
                     {openDashboardsCollapse ?
-                      <KeyboardArrowUpIcon sx={{ fontSize: '1rem' }} /> :
-                      <KeyboardArrowDownIcon sx={{ fontSize: '1rem' }} />
+                      <KeyboardArrowUpIcon sx={{ fontSize: '1rem', color: 'text.primary' }} /> :
+                      <KeyboardArrowDownIcon sx={{ fontSize: '1rem', color: 'text.primary' }} />
                     }
                   </IconButton>
                 </Box>
                 <Collapse in={openDashboardsCollapse} timeout="auto" unmountOnExit>
-                  {dashboards.length > 0 ? (
+                  {searchResult.dashboard.length > 0 ? (
                     <List disablePadding>
-                      {dashboards.map((dashboard, i) => (
+                      {searchResult.dashboard.map((dashboard, i) => (
                         <ListButtonDashboard
                           key={i}
                           dashboard={dashboard}
@@ -246,20 +352,22 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
                         Nenhum dashboard disponivel
                       </Typography>
 
-                      <VButton
-                        size='small'
-                        variant='contained'
-                        onClick={() => handleChangeOpenModalAddDashboard(true)}
-                        color='primary'
-                        label={
-                          <Typography
-                            variant="caption"
-                            textTransform='none'
-                            textAlign='left'
-                            color='white'
-                          >Criar novo dashboard</Typography>
-                        }
-                      />
+                      {dashboards.length === 0 && (
+                        <VButton
+                          size='small'
+                          variant='contained'
+                          onClick={() => handleChangeOpenModalAddDashboard(true)}
+                          color='primary'
+                          label={
+                            <Typography
+                              variant="caption"
+                              textTransform='none'
+                              textAlign='left'
+                              color='white'
+                            >Criar novo dashboard</Typography>
+                          }
+                        />
+                      )}
                     </EmptyContainer>
                   )}
                 </Collapse>

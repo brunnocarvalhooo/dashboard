@@ -1,7 +1,7 @@
-import { Autocomplete, Box, IconButton, Menu, TextField, Tooltip, Typography, useMediaQuery, useTheme } from "@mui/material"
-import { VButton, VDialog } from "../../interface"
+import { Autocomplete, Box, IconButton, InputAdornment, Menu, TextField, Tooltip, Typography, useMediaQuery, useTheme } from "@mui/material"
+import { VButton, VDialog, VIconButton } from "../../interface"
 import { SketchPicker } from 'react-color'
-import { useCallback, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { FaCircle } from "react-icons/fa"
 import { useDashboards } from "../../../contexts/dashboards"
 import { CategoryChip } from "../../interface/chip/category-chip/CategoryChip"
@@ -12,8 +12,9 @@ import { getContrastColor, truncateText } from "../../../utils/masks"
 import { AiFillEdit } from "react-icons/ai"
 import { FiTrash } from "react-icons/fi"
 import { ICategory } from "../../../dtos/categories"
-import { MdEditOff } from "react-icons/md"
+import { MdEditOff, MdOutlineClose, MdOutlineFilterAlt } from "react-icons/md"
 import { ConfirmAction } from "../../interface/dialog/ConfirmAction"
+import { IoMdSearch } from "react-icons/io"
 
 type Props = {
   open: boolean
@@ -38,6 +39,8 @@ export const ModalManageDashboardCategories = ({ open, handleChangeOpen }: Props
   const handleCloseSelectColor = () => {
     setAnchorElSelectColor(null)
   }
+
+  const [search, setSearch] = useState('')
 
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>(undefined)
@@ -69,7 +72,10 @@ export const ModalManageDashboardCategories = ({ open, handleChangeOpen }: Props
 
   const handleClose = () => {
     handleChangeOpen(false)
-    handleResetStates()
+    setTimeout(() => {
+      handleResetStates()
+      setSearch('')
+    }, 500)
   }
 
   const handleClickEditCategory = (category: ICategory) => {
@@ -141,6 +147,14 @@ export const ModalManageDashboardCategories = ({ open, handleChangeOpen }: Props
       console.log(error)
     }
   }, [color, fetchDashboardsCategories, handleResetStates, relationedDashboards, selectedCategory, title.state])
+
+  const searchResultDashboardsCategories = useMemo<ICategory[]>(() => {
+    const dashboardsCategoriesResult = dashboardsCategories.filter((category) =>
+      search ? category.name.toLowerCase().includes(search.toLowerCase()) : true
+    )
+
+    return dashboardsCategoriesResult
+  }, [dashboardsCategories, search])
 
   return (
     <VDialog
@@ -253,7 +267,7 @@ export const ModalManageDashboardCategories = ({ open, handleChangeOpen }: Props
                 <TextField
                   {...params}
                   variant="standard"
-                  label="Dashboards da categoria"
+                  placeholder="Dashboards da categoria"
                 />
               )}
             />
@@ -262,8 +276,39 @@ export const ModalManageDashboardCategories = ({ open, handleChangeOpen }: Props
       }
     >
       <Box my={2}>
-        {dashboardsCategories.length > 0 ?
-          dashboardsCategories.map((category, i) => {
+        <Box display='flex' gap={1} mb={2}>
+          <TextField
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            size='small'
+            variant='standard'
+            placeholder='Pesquisar...'
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <IoMdSearch size={22} style={{ paddingBottom: '4px', color: 'text.secondary' }} />
+                  </InputAdornment>
+                ),
+                endAdornment: search && (
+                  <IconButton size='small' onClick={() => setSearch('')}>
+                    <MdOutlineClose
+                      size={20}
+                      style={{
+                        color: 'text.secondary',
+                      }}
+                    />
+                  </IconButton>
+                )
+              },
+            }}
+          />
+
+          <VIconButton size="small" icon={<MdOutlineFilterAlt size={20} />} />
+        </Box>
+
+        {searchResultDashboardsCategories.length > 0 ?
+          searchResultDashboardsCategories.map((category, i) => {
             const contrastColor = getContrastColor(category.color)
 
             return (
@@ -308,7 +353,15 @@ export const ModalManageDashboardCategories = ({ open, handleChangeOpen }: Props
                         labelConfirmButton="Excluir"
                         open={openConfirmDelete === category.id}
                         title="Excluir categoria?"
-                        subtitle={`Isso ira excluir a categoria (${category.name}) permanentemente`}
+                        subtitle={
+                          <>
+                            Excluir a categoria (
+                            <Typography component="span" color={category.color}>
+                              {category.name}
+                            </Typography>
+                            ) removerá a relação com os dashboards associados a ela.
+                          </>
+                        }
                         onClickConfirmButton={() => handleDeleteCategory(category.id)}
                       />
                     </Box>
