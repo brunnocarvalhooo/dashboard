@@ -1,4 +1,4 @@
-import { Autocomplete, Box, IconButton, Menu, TextField, Tooltip, Typography, useTheme } from "@mui/material"
+import { Autocomplete, Box, IconButton, Menu, TextField, Tooltip, Typography, useMediaQuery, useTheme } from "@mui/material"
 import { VButton, VDialog } from "../../interface"
 import { SketchPicker } from 'react-color'
 import { useCallback, useState } from "react"
@@ -12,6 +12,8 @@ import { getContrastColor, truncateText } from "../../../utils/masks"
 import { AiFillEdit } from "react-icons/ai"
 import { FiTrash } from "react-icons/fi"
 import { ICategory } from "../../../dtos/categories"
+import { MdEditOff } from "react-icons/md"
+import { ConfirmAction } from "../../interface/dialog/ConfirmAction"
 
 type Props = {
   open: boolean
@@ -26,6 +28,7 @@ export const ModalManageDashboardCategories = ({ open, handleChangeOpen }: Props
   } = useDashboards()
 
   const theme = useTheme()
+  const smDown = useMediaQuery(theme.breakpoints.down('sm'))
 
   const [anchorElSelectColor, setAnchorElSelectColor] = useState<null | HTMLElement>(null)
   const openSelectColor = Boolean(anchorElSelectColor)
@@ -39,6 +42,10 @@ export const ModalManageDashboardCategories = ({ open, handleChangeOpen }: Props
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>(undefined)
   const [relationedDashboards, setRelationedDashboards] = useState<string[]>([])
+  const [openConfirmDelete, setOpenConfirmDelete] = useState<string | undefined>()
+  const handleChangeOpenConfirmDelete = (newValue: string | undefined) => {
+    setOpenConfirmDelete(newValue)
+  }
 
   const [title, setTitle] = useState({
     state: '',
@@ -74,11 +81,32 @@ export const ModalManageDashboardCategories = ({ open, handleChangeOpen }: Props
 
     setTitle((prev) => ({
       ...prev,
-      state: category.name
+      state: category.name,
+      error: prev.error ? '' : prev.error,
     }))
     setColor(category.color)
     setSelectedCategory(category.id)
   }
+
+  const handleExitEditCategory = () => {
+    handleResetStates()
+  }
+
+  const handleDeleteCategory = useCallback((id_category: string) => {
+    try {
+      storage.dashboards_categories.delete(id_category)
+
+      fetchDashboardsCategories()
+
+      handleChangeOpenConfirmDelete(undefined)
+
+      if (selectedCategory === id_category) {
+        handleResetStates()
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }, [fetchDashboardsCategories, handleResetStates, selectedCategory])
 
   const handleCreateAndUpdateCategory = useCallback(async () => {
     if (!title.state) {
@@ -98,6 +126,7 @@ export const ModalManageDashboardCategories = ({ open, handleChangeOpen }: Props
           relationedDashboards,
         )
       } else {
+        console.log(relationedDashboards)
         storage.dashboards_categories.create(
           title.state,
           color,
@@ -117,24 +146,38 @@ export const ModalManageDashboardCategories = ({ open, handleChangeOpen }: Props
     <VDialog
       open={open}
       handleClose={handleClose}
+      fullWidth
+      fullScreen={smDown}
+      maxWidth='sm'
       summary={
-        <Typography color="text.primary">Categorias de dashboard</Typography>
+        <Typography color="text.primary">Categorias de dashboard ({dashboardsCategories.length})</Typography>
       }
       actions={
         <Box width='100%'>
           <Box width='100%' display='flex' alignItems='flex-start' gap={1}>
             <Box display='flex' alignItems='flex-start' gap={0.5} flex={1}>
-              <Tooltip title='Cor da categoria' placement="bottom">
-                <IconButton
-                  id="select-color-buttom"
-                  aria-controls={openSelectColor ? 'select-color-menu' : undefined}
-                  aria-haspopup="true"
-                  aria-expanded={openSelectColor ? 'true' : undefined}
-                  onClick={handleClickSelectColor}
-                >
-                  <FaCircle color={color} />
-                </IconButton>
-              </Tooltip>
+              <Box display='flex' alignItems='center'>
+                <Tooltip title='Cor da categoria' placement="bottom">
+                  <IconButton
+                    id="select-color-buttom"
+                    aria-controls={openSelectColor ? 'select-color-menu' : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={openSelectColor ? 'true' : undefined}
+                    onClick={handleClickSelectColor}
+                    size="small"
+                  >
+                    <FaCircle color={color} />
+                  </IconButton>
+                </Tooltip>
+
+                {selectedCategory && (
+                  <Tooltip title='Sair da edição de categoria' placement="bottom">
+                    <IconButton onClick={handleExitEditCategory} size="small">
+                      <MdEditOff />
+                    </IconButton>
+                  </Tooltip>
+                )}
+              </Box>
 
               <Menu
                 id="select-color-menu"
@@ -177,7 +220,6 @@ export const ModalManageDashboardCategories = ({ open, handleChangeOpen }: Props
                 }
                 size="small"
                 variant="standard"
-                sx={{ pt: 0.5 }}
               />
             </Box>
 
@@ -225,40 +267,60 @@ export const ModalManageDashboardCategories = ({ open, handleChangeOpen }: Props
             const contrastColor = getContrastColor(category.color)
 
             return (
-              <CategoryChip
+              <Tooltip
                 key={i}
-                categoryColor={category.color}
-                onMouseEnter={() => setHoveredIndex(i)}
-                onMouseLeave={() => setHoveredIndex(null)}
-                label={
-                  <Box display='flex' alignItems='center' gap={0.5}>
-                    <Typography
-                      variant='caption'
-                      color={contrastColor}
-                    >{truncateText(category.name, 12)}</Typography>
+                open={selectedCategory === category.id && !openConfirmDelete}
+                arrow
+                title='Editando...'
+                placement="top"
+              >
+                <CategoryChip
+                  categoryColor={category.color}
+                  onMouseEnter={() => setHoveredIndex(i)}
+                  onMouseLeave={() => setHoveredIndex(null)}
+                  label={
+                    <Box display='flex' alignItems='center' gap={0.5}>
+                      <Typography
+                        variant='caption'
+                        color={contrastColor}
+                      >{truncateText(category.name, 12)}</Typography>
 
-                    {hoveredIndex === i && (
-                      <Box display="flex" alignItems="center">
-                        <IconButton
-                          size="small"
-                          onClick={() => handleClickEditCategory(category)}
-                        >
-                          <AiFillEdit size={14} style={{ color: contrastColor }} />
-                        </IconButton>
-                        <IconButton size="small">
-                          <FiTrash size={14} style={{ color: contrastColor }} />
-                        </IconButton>
-                      </Box>
-                    )}
-                  </Box>
-                }
-                size="small"
-                sx={{
-                  marginRight: '8px',
-                  marginBottom: '8px',
-                  transition: 'all ease 1s'
-                }}
-              />
+                      {hoveredIndex === i && (
+                        <Box display="flex" alignItems="center">
+                          <IconButton
+                            size="small"
+                            onClick={() => handleClickEditCategory(category)}
+                          >
+                            <AiFillEdit size={14} style={{ color: contrastColor }} />
+                          </IconButton>
+
+                          <IconButton
+                            size="small"
+                            onClick={() => handleChangeOpenConfirmDelete(category.id)}
+                          >
+                            <FiTrash size={14} style={{ color: contrastColor }} />
+                          </IconButton>
+                        </Box>
+                      )}
+
+                      <ConfirmAction
+                        handleClose={() => handleChangeOpenConfirmDelete(undefined)}
+                        labelConfirmButton="Excluir"
+                        open={openConfirmDelete === category.id}
+                        title="Excluir categoria?"
+                        subtitle={`Isso ira excluir a categoria (${category.name}) permanentemente`}
+                        onClickConfirmButton={() => handleDeleteCategory(category.id)}
+                      />
+                    </Box>
+                  }
+                  size="small"
+                  sx={{
+                    marginRight: '8px',
+                    marginBottom: '8px',
+                    transition: 'all ease 1s'
+                  }}
+                />
+              </Tooltip>
             )
           }) : (
             <Typography

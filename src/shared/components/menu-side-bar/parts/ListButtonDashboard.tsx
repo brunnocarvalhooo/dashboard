@@ -114,7 +114,7 @@ export const ListButtonDashboard = ({ dashboard, handleSelectDashboard }: Props)
 
       <ConfirmAction
         handleClose={() => handleChangeOpenConfirmDelete(false)}
-        labelConfirmButton="Deletar"
+        labelConfirmButton="Excluir"
         open={openConfirmDelete}
         title="Excluir dashboard?"
         subtitle={`Isso ira excluir o dashboard (${dashboard.name}) permanentemente`}

@@ -9,11 +9,11 @@ import { VDialog } from '../../../shared/components'
 
 type Props = {
   open: boolean
-  handleChangeOpen: (newValue: number | undefined) => void
+  handleChangeOpen: (newValue: string | undefined) => void
   component: IComponent
 }
 
-export const ModalFullScreen = ({ open, handleChangeOpen, component }: Props) => {
+export const ModalFullScreen = ({ open, handleChangeOpen }: Props) => {
   const handleClose = () => {
     handleChangeOpen(undefined)
   }

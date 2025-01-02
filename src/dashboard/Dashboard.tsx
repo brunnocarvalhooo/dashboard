@@ -60,8 +60,8 @@ export const Dashboard = () => {
     setOpenAddComponentModal(newValue)
   }
 
-  const [openFullScreenModal, setOpenFullScreenModal] = useState<number | undefined>(undefined)
-  const handleChangeOpenFullScreenModal = (newValue: number | undefined) => {
+  const [openFullScreenModal, setOpenFullScreenModal] = useState<string | undefined>(undefined)
+  const handleChangeOpenFullScreenModal = (newValue: string | undefined) => {
     setOpenFullScreenModal(newValue)
   }
 

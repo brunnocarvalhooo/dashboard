@@ -1,17 +1,17 @@
 import Box from '@mui/material/Box'
 
-import { Collapse, Divider, IconButton, List, Tooltip, Typography, useTheme } from '@mui/material'
+import { Collapse, Divider, IconButton, InputAdornment, List, TextField, Tooltip, Typography, useTheme } from '@mui/material'
 
 import { useDrawer } from '../../contexts/drawer'
 import { ChildrenContainer, DrawerContentContainer, MenuButton, StyledDrawer } from './styles'
 
-import { MdKeyboardArrowLeft } from "react-icons/md";
-import { MdAddChart } from "react-icons/md";
-import { MdOutlineLightMode } from "react-icons/md";
-import { MdOutlineDarkMode } from "react-icons/md";
+import { MdKeyboardArrowLeft } from "react-icons/md"
+import { MdAddChart } from "react-icons/md"
+import { MdOutlineLightMode } from "react-icons/md"
+import { MdOutlineDarkMode } from "react-icons/md"
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
-import { GrConfigure } from "react-icons/gr";
+import { GrConfigure } from "react-icons/gr"
 
 import { useAppTheme } from '../../contexts/theme'
 import { ModalAddDashboard } from './components/ModalAddDashboard'
@@ -23,8 +23,9 @@ import { CategoryChip } from '../interface/chip/category-chip/CategoryChip'
 import { LSDashboard } from '../../../services/local-strorage/dashboards'
 import { storage } from '../../../models'
 import { EmptyContainer } from '../home/styles'
-import { ListButtonDashboard } from './parts/ListButtonDashboard';
-import { ModalManageDashboardCategories } from './components/ModalManageDashboardCategories';
+import { ListButtonDashboard } from './parts/ListButtonDashboard'
+import { ModalManageDashboardCategories } from './components/ModalManageDashboardCategories'
+import { IoMdSearch } from 'react-icons/io'
 
 export const DRAWER_WIDTH = 260
 
@@ -44,6 +45,17 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
     handleChangeCurrentDashboard,
     dashboardsCategories,
   } = useDashboards()
+
+  const [maxVisibleCategories, setMaxVisibleCategories] = useState(10)
+  const handleChangeMaxVisibleCategories = (operation: '-' | '+') => {
+    setMaxVisibleCategories((prev) => {
+      if (operation === '+') {
+        return Math.min(prev + 10, dashboardsCategories.length)
+      } else {
+        return Math.max(prev - 10, 10)
+      }
+    })
+  }
 
   const [openModalAddDashboard, setOpenModalAddDashboard] = useState(false)
   const handleChangeOpenModalAddDashboard = (newValue: boolean) => {
@@ -105,13 +117,29 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
               />
             </Box>
 
-            <Divider sx={{ opacity: '0.4' }} />
+            <Divider sx={{ opacity: '0.4', mb: 1 }} />
+
+            <TextField
+              size='small'
+              variant='standard'
+              fullWidth
+              placeholder='Pesquisar...'
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <IoMdSearch size={22} style={{ paddingBottom: '4px', color: 'text.secondary' }} />
+                    </InputAdornment>
+                  ),
+                },
+              }}
+            />
 
             <Box mt={1}>
               <Box mb={1}>
                 <Box display='flex' alignItems='center'>
-                  <Box display='flex' alignItems='center' flex={1}>
-                    <Typography variant='caption'>Categorias</Typography>
+                  <Box display='flex' alignItems='center' flex={1} gap={0.5}>
+                    <Typography variant='caption'>Categorias de dashboard ({dashboardsCategories.length})</Typography>
                     <IconButton
                       size='small'
                       onClick={() => handleChangeOpenCategoryCollapse(!openCategoryCollapse)}
@@ -136,19 +164,21 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
                 <Collapse in={openCategoryCollapse} timeout="auto" unmountOnExit>
                   <Box mt={0.5}>
                     {dashboardsCategories.length > 0 ?
-                      dashboardsCategories.map((category, i) => (
-                        <CategoryChip
-                          key={i}
-                          categoryColor={category.color}
-                          label={
-                            <Typography
-                              variant='caption'
-                              color={getContrastColor(category.color)}
-                            >{truncateText(category.name, 12)}</Typography>
-                          }
-                          size="small"
-                        />
-                      )) : (
+                      dashboardsCategories
+                        .slice(0, maxVisibleCategories)
+                        .map((category, i) => (
+                          <CategoryChip
+                            key={i}
+                            categoryColor={category.color}
+                            label={
+                              <Typography
+                                variant='caption'
+                                color={getContrastColor(category.color)}
+                              >{truncateText(category.name, 12)}</Typography>
+                            }
+                            size="small"
+                          />
+                        )) : (
                         <Typography
                           fontSize='0.7rem'
                           color='text.secondary'
@@ -156,12 +186,35 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
                         >Nenhuma categoria de dashboard disponivel</Typography>
                       )}
                   </Box>
+
+                  {dashboardsCategories.length > 10 && (
+                    <>
+                      <Tooltip title='Mostrar menos' placement='bottom-end'>
+                        <IconButton
+                          size='small'
+                          disabled={maxVisibleCategories <= 10}
+                          onClick={() => handleChangeMaxVisibleCategories('-')}
+                        >
+                          <KeyboardArrowUpIcon sx={{ fontSize: '1rem' }} />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title='Mostrar mais' placement='bottom'>
+                        <IconButton
+                          size='small'
+                          disabled={maxVisibleCategories >= dashboardsCategories.length}
+                          onClick={() => handleChangeMaxVisibleCategories('+')}
+                        >
+                          <KeyboardArrowDownIcon sx={{ fontSize: '1rem' }} />
+                        </IconButton>
+                      </Tooltip>
+                    </>
+                  )}
                 </Collapse>
               </Box>
 
               <Box>
-                <Box display='flex' alignItems='center' mb={0.5}>
-                  <Typography variant='body2'>Dashboards</Typography>
+                <Box display='flex' alignItems='center' mb={0.5} gap={0.5}>
+                  <Typography variant='body2'>Dashboards ({dashboards.length})</Typography>
                   <IconButton
                     size='small'
                     onClick={() => handleChangeOpenDashboardsCollapse(!openDashboardsCollapse)}

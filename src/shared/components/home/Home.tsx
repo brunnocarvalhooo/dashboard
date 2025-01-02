@@ -19,6 +19,7 @@ export const EmptyDashboards = () => {
           variant="h4"
           fontWeight='bold'
           color="primary.main"
+          textAlign='center'
         >
           Bem vindo ao Dashboard
         </Typography>

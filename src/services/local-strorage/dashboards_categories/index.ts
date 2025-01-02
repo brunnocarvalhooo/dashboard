@@ -25,12 +25,16 @@ export class LSDashboardsCategories implements IDashboardsCategoriesFactory {
     dashboards_categories.push({
       id: newId,
       name,
-      color
+      color,
     })
 
-    this.createRelations(newId, id_dashboards, dashboards_categories_relation)
+    const updatedRelations = this.createRelations(newId, id_dashboards, dashboards_categories_relation)
 
-    this.storage.set({ ...rest, dashboards_categories })
+    this.storage.set({
+      ...rest,
+      dashboards_categories,
+      dashboards_categories_relation: updatedRelations,
+    })
   }
 
   public update(
@@ -49,10 +53,15 @@ export class LSDashboardsCategories implements IDashboardsCategoriesFactory {
       selectedCategory.name = name
       selectedCategory.color = color
 
-      const updatedRelations = dashboards_categories_relation.filter(
+      const filteredRelations = dashboards_categories_relation.filter(
         (relation) => relation.id_category !== id_category
       )
-      this.createRelations(id_category, id_dashboards, updatedRelations)
+
+      const updatedRelations = this.createRelations(
+        id_category,
+        id_dashboards,
+        filteredRelations
+      )
 
       this.storage.set({
         ...rest,
@@ -66,16 +75,14 @@ export class LSDashboardsCategories implements IDashboardsCategoriesFactory {
     id_category: string,
     id_dashboards: string[],
     existingRelations: ILSDashboardsCategories[]
-  ) {
-    id_dashboards.forEach((id_dashboard) => {
-      const newRelationId = uuidv4()
+  ): ILSDashboardsCategories[] {
+    const newRelations = id_dashboards.map((id_dashboard) => ({
+      id: uuidv4(),
+      id_category,
+      id_dashboard,
+    }))
 
-      existingRelations.push({
-        id: newRelationId,
-        id_category,
-        id_dashboard,
-      })
-    })
+    return [...existingRelations, ...newRelations]
   }
 
   public delete(id_category: string) {
@@ -83,20 +90,20 @@ export class LSDashboardsCategories implements IDashboardsCategoriesFactory {
       dashboards_categories,
       dashboards_categories_relation,
       ...rest
-    } = this.storage.get();
+    } = this.storage.get()
 
     const updatedCategories = dashboards_categories.filter(
       (category) => category.id !== id_category
-    );
+    )
 
     const updatedRelations = dashboards_categories_relation.filter(
       (relation) => relation.id_category !== id_category
-    );
+    )
 
     this.storage.set({
       ...rest,
       dashboards_categories: updatedCategories,
       dashboards_categories_relation: updatedRelations,
-    });
+    })
   }
 }

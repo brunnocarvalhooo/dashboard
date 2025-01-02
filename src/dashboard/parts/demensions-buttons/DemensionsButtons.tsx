@@ -2,7 +2,6 @@ import { DimensionButton, DimensionsButtonsContainer, rotateStyle } from "./styl
 
 import RemoveIcon from '@mui/icons-material/Remove'
 import AddIcon from '@mui/icons-material/Add'
-import { useDashboards } from "../../../shared/contexts/dashboards"
 import { IComponent } from "../../../shared/dtos/components"
 import { IDashboard } from "../../../shared/dtos/dashboard"
 
@@ -11,47 +10,42 @@ type Props = {
   dashboard: IDashboard
 }
 
-export const DemensionsButtons = ({ dashboard, component }: Props) => {
-  const { handleChangeDashboards } = useDashboards()
+export const DemensionsButtons = ({ component }: Props) => {
+  // const { handleChangeCurrentDashboard } = useDashboards()
 
-  const handleChangeDimension = (
-    orientation: 'bottom' | 'right',
-    action: '+' | '-'
-  ) => {
-    const MAX_DIMENSIONS = { bottom: 4, right: 12 }
-    const MIN_DIMENSION = 1
+  // const handleChangeDimension = (
+  //   orientation: 'bottom' | 'right',
+  //   action: '+' | '-'
+  // ) => {
+  //   const MAX_DIMENSIONS = { bottom: 4, right: 12 }
+  //   const MIN_DIMENSION = 1
 
-    handleChangeDashboards((prev) =>
-      prev.map((prevDashboard) => {
-        console.log(prevDashboard.id, dashboard.id)
-        if (prevDashboard.id !== dashboard.id) return prevDashboard
+  //   handleChangeCurrentDashboard((prev) => {
+  //     if (prev) {
+  //       const componentIndex = prev.components.findIndex(
+  //         (comp) => comp.id === component.id
+  //       )
 
-        const updatedDashboard = { ...prevDashboard }
+  //       if (componentIndex !== -1) {
+  //         const updatedComponent = {
+  //           ...prev.components[componentIndex],
+  //         }
 
-        const componentIndex = updatedDashboard.components.findIndex(
-          (comp) => comp.id === component.id
-        )
+  //         const dimensionKey = orientation === 'bottom' ? 'height' : 'width'
+  //         const maxLimit = MAX_DIMENSIONS[orientation]
 
-        if (componentIndex !== -1) {
-          const updatedComponent = {
-            ...updatedDashboard.components[componentIndex],
-          }
+  //         updatedComponent[dimensionKey] =
+  //           action === '+'
+  //             ? Math.min(updatedComponent[dimensionKey] + 1, maxLimit)
+  //             : Math.max(updatedComponent[dimensionKey] - 1, MIN_DIMENSION)
 
-          const dimensionKey = orientation === 'bottom' ? 'height' : 'width'
-          const maxLimit = MAX_DIMENSIONS[orientation]
+  //         prev.components[componentIndex] = updatedComponent
+  //       }
 
-          updatedComponent[dimensionKey] =
-            action === '+'
-              ? Math.min(updatedComponent[dimensionKey] + 1, maxLimit)
-              : Math.max(updatedComponent[dimensionKey] - 1, MIN_DIMENSION)
-
-          updatedDashboard.components[componentIndex] = updatedComponent
-        }
-
-        return updatedDashboard
-      })
-    )
-  }
+  //       return updatedDashboard
+  //     }
+  //   })
+  // }
 
   return (
     <>
@@ -68,7 +62,7 @@ export const DemensionsButtons = ({ dashboard, component }: Props) => {
           size="small"
           color="primary"
           disabled={component.width === 12}
-          onClick={() => handleChangeDimension('right', '+')}
+          // onClick={() => handleChangeDimension('right', '+')}
         >
           <AddIcon sx={{ ...rotateStyle }} fontSize="small" />
         </DimensionButton>
@@ -79,7 +73,7 @@ export const DemensionsButtons = ({ dashboard, component }: Props) => {
           size="small"
           color="primary"
           disabled={component.width === 1}
-          onClick={() => handleChangeDimension('right', '-')}
+          // onClick={() => handleChangeDimension('right', '-')}
         >
           <RemoveIcon sx={{ ...rotateStyle }} fontSize="small" />
         </DimensionButton>
@@ -92,7 +86,7 @@ export const DemensionsButtons = ({ dashboard, component }: Props) => {
           size="small"
           color="primary"
           disabled={component.height === 4}
-          onClick={() => handleChangeDimension('bottom', '+')}
+          // onClick={() => handleChangeDimension('bottom', '+')}
         >
           <AddIcon fontSize="small" />
         </DimensionButton>
@@ -103,7 +97,7 @@ export const DemensionsButtons = ({ dashboard, component }: Props) => {
           size="small"
           color="primary"
           disabled={component.height === 1}
-          onClick={() => handleChangeDimension('bottom', '-')}
+          // onClick={() => handleChangeDimension('bottom', '-')}
         >
           <RemoveIcon fontSize="small" />
         </DimensionButton>
