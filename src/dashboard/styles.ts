@@ -3,11 +3,11 @@ import { VIconButton } from "../shared/components"
 import { borderColor } from "../shared/components/interface/dialog/styles"
 
 export enum rollUpColors {
-  BLUE = '#2B76D9',
-  GREEN = '#66A3D9',
-  YELLOW = '#15402C',
-  RED = '#2A5928',
-  PURPLE = '#FF9800',
+  BLUE = '#0597F2',
+  GREEN = '#49D907',
+  YELLOW = '#e0e706',
+  RED = '#F24607',
+  PURPLE = '#970FF2',
 }
 
 export const Container = styled(Box)(() => ({
@@ -17,7 +17,13 @@ export const Container = styled(Box)(() => ({
 }))
 
 export const DashboardContainer = styled(ImageList)(() => ({
-  
+
+}))
+
+export const SearchContainer = styled(Box)(() => ({
+  display: 'flex',
+  justifyContent: 'flex-end', 
+  gap: '8px' 
 }))
 
 export const StyledDashboardComponent = styled(ImageListItem)(({ theme }) => ({
@@ -105,7 +111,7 @@ export const ActionsSpeedDial = styled(SpeedDial)(({ theme }) => ({
     background: theme.palette.background.paper,
     border: '1px solid',
     borderColor: borderColor(theme.palette.mode),
-    
+
     '&:hover': {
       background: theme.palette.background.paper,
     },

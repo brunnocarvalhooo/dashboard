@@ -1,35 +1,29 @@
-import { Autocomplete, Box, IconButton, InputAdornment, Menu, TextField, Tooltip, Typography, useMediaQuery, useTheme } from "@mui/material"
-import { VButton, VDialog, VIconButton } from "../../interface"
-import { SketchPicker } from 'react-color'
+import { Box, IconButton, InputAdornment, Menu, TextField, Tooltip, Typography, useMediaQuery, useTheme } from "@mui/material"
+import { useDashboards } from "../../../shared/contexts/dashboards"
 import { useCallback, useMemo, useState } from "react"
+import { REQUIRED_ERROR } from "../../../shared/utils/validation-errors"
+import { storage } from "../../../models"
+import { VButton, VDialog, VIconButton } from "../../../shared/components"
 import { FaCircle } from "react-icons/fa"
-import { useDashboards } from "../../../contexts/dashboards"
-import { CategoryChip } from "../../interface/chip/category-chip/CategoryChip"
-import { REQUIRED_ERROR } from "../../../utils/validation-errors"
-import { storage } from "../../../../models"
-import { getContrastColor, truncateText } from "../../../utils/masks"
-
+import { MdEditOff, MdOutlineClose, MdOutlineFilterAlt } from "react-icons/md"
+import { SketchPicker } from "react-color"
+import { IoMdSearch } from "react-icons/io"
+import { StyledMenu } from "../../../shared/components/interface/menu/styles"
+import { getContrastColor, truncateText } from "../../../shared/utils/masks"
+import { CategoryChip } from "../../../shared/components/interface/chip/category-chip/CategoryChip"
 import { AiFillEdit } from "react-icons/ai"
 import { FiTrash } from "react-icons/fi"
-import { ICategory } from "../../../dtos/categories"
-import { MdEditOff, MdOutlineClose, MdOutlineFilterAlt } from "react-icons/md"
-import { ConfirmAction } from "../../interface/dialog/ConfirmAction"
-import { IoMdSearch } from "react-icons/io"
-import { StyledMenu } from "../../interface/menu/styles"
-import { DashboardsCategoriesFiltersContent } from "../parts/DashboardsCategoriesFiltersContent"
-import { useAppTheme } from "../../../contexts/theme"
+import { ConfirmAction } from "../../../shared/components/interface/dialog/ConfirmAction"
+import { ILSCategory } from "../../../models/category.model"
+import { useAppTheme } from "../../../shared/contexts/theme"
 
 type Props = {
   open: boolean
   handleChangeOpen: (newValue: boolean) => void
 }
 
-export const ModalManageDashboardCategories = ({ open, handleChangeOpen }: Props) => {
-  const {
-    dashboardsCategories,
-    fetchDashboardsCategories,
-    dashboards
-  } = useDashboards()
+export const ModalManageComponentCategories = ({ open, handleChangeOpen }: Props) => {
+  const { currentDashboard } = useDashboards()
 
   const { primaryColor } = useAppTheme()
 
@@ -49,24 +43,24 @@ export const ModalManageDashboardCategories = ({ open, handleChangeOpen }: Props
 
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>(undefined)
-  const [relationedDashboards, setRelationedDashboards] = useState<string[]>([])
+
   const [openConfirmDelete, setOpenConfirmDelete] = useState<string | undefined>()
   const handleChangeOpenConfirmDelete = (newValue: string | undefined) => {
     setOpenConfirmDelete(newValue)
   }
 
-  const [dashboardsFilters, setDashboardsFilters] = useState({
+  const [dashboardsFilters] = useState({
     active: true,
     inactive: true
   })
 
-  const [anchorElFilterDashboardsCategories, setAnchorElDashboardsCategories] = useState<null | HTMLElement>(null)
-  const openFilterDashboardsCategories = Boolean(anchorElFilterDashboardsCategories)
-  const handleClickFilterDashboardsCategories = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElDashboardsCategories(event.currentTarget)
+  const [anchorElFilterComponentCategories, setAnchorElComponentCategories] = useState<null | HTMLElement>(null)
+  const openFilterComponentCategories = Boolean(anchorElFilterComponentCategories)
+  const handleClickFilterComponentCategories = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElComponentCategories(event.currentTarget)
   }
-  const handleCloseFilterDashboardsCategories = () => {
-    setAnchorElDashboardsCategories(null)
+  const handleCloseFilterComponentCategories = () => {
+    setAnchorElComponentCategories(null)
   }
 
   const [title, setTitle] = useState({
@@ -85,7 +79,6 @@ export const ModalManageDashboardCategories = ({ open, handleChangeOpen }: Props
       error: ''
     })
     setColor(theme.palette.primary.main)
-    setRelationedDashboards([])
     setSelectedCategory(undefined)
   }, [theme.palette.primary.main])
 
@@ -97,21 +90,21 @@ export const ModalManageDashboardCategories = ({ open, handleChangeOpen }: Props
     }, 500)
   }
 
-  const handleClickEditCategory = (category: ICategory) => {
-    const dashboardsCategories = dashboards.filter((dashboard) => category.relations.includes(dashboard.id))
+  // const handleClickEditCategory = (category: ILSCategory) => {
+  //   const componentCategories = dashboards.filter((dashboard) => category.relations.includes(dashboard.id))
 
-    const dashboardsId = dashboardsCategories.map((category) => category.id)
+  //   const dashboardsId = componentCategories.map((category) => category.id)
 
-    setRelationedDashboards(dashboardsId)
+  //   setRelationedDashboards(dashboardsId)
 
-    setTitle((prev) => ({
-      ...prev,
-      state: category.name,
-      error: prev.error ? '' : prev.error,
-    }))
-    setColor(category.color)
-    setSelectedCategory(category.id)
-  }
+  //   setTitle((prev) => ({
+  //     ...prev,
+  //     state: category.name,
+  //     error: prev.error ? '' : prev.error,
+  //   }))
+  //   setColor(category.color)
+  //   setSelectedCategory(category.id)
+  // }
 
   const handleExitEditCategory = () => {
     handleResetStates()
@@ -121,7 +114,7 @@ export const ModalManageDashboardCategories = ({ open, handleChangeOpen }: Props
     try {
       storage.dashboards_categories.delete(id_category)
 
-      fetchDashboardsCategories()
+      // fetchComponentCategories()
 
       handleChangeOpenConfirmDelete(undefined)
 
@@ -131,7 +124,7 @@ export const ModalManageDashboardCategories = ({ open, handleChangeOpen }: Props
     } catch (error) {
       console.log(error)
     }
-  }, [fetchDashboardsCategories, handleResetStates, selectedCategory])
+  }, [handleResetStates, selectedCategory])
 
   const handleCreateAndUpdateCategory = useCallback(async () => {
     if (!title.state) {
@@ -143,45 +136,49 @@ export const ModalManageDashboardCategories = ({ open, handleChangeOpen }: Props
     }
 
     try {
-      if (selectedCategory) {
-        storage.dashboards_categories.update(
-          selectedCategory,
-          title.state,
-          color,
-          relationedDashboards,
-        )
-      } else {
-        storage.dashboards_categories.create(
-          title.state,
-          color,
-          relationedDashboards,
-        )
-      }
+      // if (selectedCategory) {
+      //   storage.dashboards_categories.update(
+      //     selectedCategory,
+      //     title.state,
+      //     color,
+      //     // relationedDashboards,
+      //   )
+      // } else {
+      //   storage.dashboards_categories.create(
+      //     title.state,
+      //     color,
+      //     // relationedDashboards,
+      //   )
+      // }
 
-      fetchDashboardsCategories()
+      // fetchComponentCategories()
 
       handleResetStates()
     } catch (error) {
       console.log(error)
     }
-  }, [color, fetchDashboardsCategories, handleResetStates, relationedDashboards, selectedCategory, title.state])
+  }, [handleResetStates, title.state])
 
-  const searchResultDashboardsCategories = useMemo<ICategory[]>(() => {
-    const dashboardsCategoriesResult = dashboardsCategories
-      .filter((category) =>
-        search ? category.name.toLowerCase().includes(search.toLowerCase()) : true
-      )
-      .filter((category) => {
-        if (dashboardsFilters.active && dashboardsFilters.inactive) return true
-        if (dashboardsFilters.active) return category.active
-        if (dashboardsFilters.inactive) return !category.active
-        return false
-      })
+  const searchResultComponentCategories = useMemo<ILSCategory[] | undefined>(() => {
+    if (currentDashboard) {
+      const componentsCategories = storage.dashboards.getCurrentDashboardComponentsCategories(currentDashboard.id)
 
-    setSelectedCategory((prev) => prev)
+      const componentCategoriesResult = componentsCategories
+        .filter((category) =>
+          search ? category.name.toLowerCase().includes(search.toLowerCase()) : true
+        )
+        .filter((category) => {
+          if (dashboardsFilters.active && dashboardsFilters.inactive) return true
+          if (dashboardsFilters.active) return category.active
+          if (dashboardsFilters.inactive) return !category.active
+          return false
+        })
 
-    return dashboardsCategoriesResult
-  }, [dashboardsCategories, dashboardsFilters.active, dashboardsFilters.inactive, search])
+      setSelectedCategory((prev) => prev)
+
+      return componentCategoriesResult
+    }
+  }, [currentDashboard, dashboardsFilters.active, dashboardsFilters.inactive, search])
 
   return (
     <VDialog
@@ -191,7 +188,7 @@ export const ModalManageDashboardCategories = ({ open, handleChangeOpen }: Props
       fullScreen={smDown}
       maxWidth='sm'
       summary={
-        <Typography color="text.primary">Categorias de dashboard ({dashboardsCategories.length})</Typography>
+        <Typography color="text.primary">Categorias de {currentDashboard?.name} ({currentDashboard?.categories.length})</Typography>
       }
       actions={
         <Box width='100%'>
@@ -279,11 +276,11 @@ export const ModalManageDashboardCategories = ({ open, handleChangeOpen }: Props
           </Box>
 
           <Box mt={2}>
-            <Autocomplete
+            {/* <Autocomplete
               noOptionsText='Nenhum dashboard disponivel'
               multiple
-              options={dashboards}
-              value={dashboards.filter((dashboard) => relationedDashboards.includes(dashboard.id))}
+              options={currentDashboard?.categories}
+              value={currentDashboard?.categories.filter((dashboard) => relationedDashboards.includes(dashboard.id))}
               getOptionLabel={(option) => option.name}
               onChange={(_, dashboards) => {
                 const DashboardIds = dashboards.map((dashboard) => dashboard.id)
@@ -297,7 +294,7 @@ export const ModalManageDashboardCategories = ({ open, handleChangeOpen }: Props
                   placeholder="Dashboards da categoria"
                 />
               )}
-            />
+            /> */}
           </Box>
         </Box>
       }
@@ -334,19 +331,19 @@ export const ModalManageDashboardCategories = ({ open, handleChangeOpen }: Props
           <VIconButton
             size='small'
             id="filter-dashboards-categories-button"
-            aria-controls={openFilterDashboardsCategories ? 'filter-dashboards-categories-menu' : undefined}
+            aria-controls={openFilterComponentCategories ? 'filter-dashboards-categories-menu' : undefined}
             aria-haspopup="true"
-            aria-expanded={openFilterDashboardsCategories ? 'true' : undefined}
-            onClick={handleClickFilterDashboardsCategories}
+            aria-expanded={openFilterComponentCategories ? 'true' : undefined}
+            onClick={handleClickFilterComponentCategories}
             icon={<MdOutlineFilterAlt size={20} color={theme.palette.text.secondary} />}
           />
 
           <StyledMenu
             id="filter-dashboards-categories-menu"
             aria-labelledby="filter-dashboards-categories-button"
-            anchorEl={anchorElFilterDashboardsCategories}
-            open={openFilterDashboardsCategories}
-            onClose={handleCloseFilterDashboardsCategories}
+            anchorEl={anchorElFilterComponentCategories}
+            open={openFilterComponentCategories}
+            onClose={handleCloseFilterComponentCategories}
             anchorOrigin={{
               vertical: 'top',
               horizontal: 'left',
@@ -356,15 +353,15 @@ export const ModalManageDashboardCategories = ({ open, handleChangeOpen }: Props
               horizontal: 'left',
             }}
           >
-            <DashboardsCategoriesFiltersContent
+            {/* <ComponentCategoriesFiltersContent
               dashboardsFilters={dashboardsFilters}
               setDashboardsFilters={setDashboardsFilters}
-            />
+            /> */}
           </StyledMenu>
         </Box>
 
-        {searchResultDashboardsCategories.length > 0 ?
-          searchResultDashboardsCategories.map((category, i) => {
+        {searchResultComponentCategories && searchResultComponentCategories?.length > 0 ?
+          searchResultComponentCategories?.map((category, i) => {
             const contrastColor = getContrastColor(category.color)
 
             const selected = selectedCategory === category.id
@@ -392,7 +389,7 @@ export const ModalManageDashboardCategories = ({ open, handleChangeOpen }: Props
                         <Box display="flex" alignItems="center">
                           <IconButton
                             size="small"
-                            onClick={() => handleClickEditCategory(category)}
+                          // onClick={() => handleClickEditCategory(category)}
                           >
                             <AiFillEdit size={14} style={{ color: contrastColor }} />
                           </IconButton>

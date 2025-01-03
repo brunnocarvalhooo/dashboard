@@ -154,16 +154,25 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
         return false
       })
 
-    const dashboardsResult = dashboards.filter((dashboard) =>
-      search ? dashboard.name.toLowerCase().includes(search.toLowerCase()) : true
-    )
+    const dashboardsResult = dashboards
+      .filter((dashboard) =>
+        search ? dashboard.name.toLowerCase().includes(search.toLowerCase()) : true
+      )
+      .filter((dashboard) => {
+        const relatedCategories = dashboardsCategories.filter((category) =>
+          category.relations.includes(dashboard.id)
+        )
+
+        if (relatedCategories.length === 0) return true
+
+        return relatedCategories.some((category) => category.active)
+      })
 
     return {
       dashboard: dashboardsResult,
       dashboardsCategories: dashboardsCategoriesResult,
     }
   }, [dashboards, dashboardsCategories, search, dashboardsFilters])
-
   return (
     <>
       <Box position='relative'>
@@ -181,15 +190,17 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
                 />
               </Tooltip>
 
-              <VIconButton
-                id="customize-button"
-                aria-controls={openCustomize ? 'customize-menu' : undefined}
-                aria-haspopup="true"
-                aria-expanded={openCustomize ? 'true' : undefined}
-                onClick={handleClickCustomize}
-                icon={<RiColorFilterLine size={24} color={theme.palette.text.secondary} />}
-                size='small'
-              />
+              <Tooltip title='Customização' placement='left'>
+                <VIconButton
+                  id="customize-button"
+                  aria-controls={openCustomize ? 'customize-menu' : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={openCustomize ? 'true' : undefined}
+                  onClick={handleClickCustomize}
+                  icon={<RiColorFilterLine size={24} color={theme.palette.text.secondary} />}
+                  size='small'
+                />
+              </Tooltip>
 
               <StyledMenu
                 id="customize-menu"
@@ -205,6 +216,7 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
                   vertical: 'top',
                   horizontal: 'right',
                 }}
+                sx={{ top: '-8px' }}
               >
                 <CustomizeContent />
               </StyledMenu>

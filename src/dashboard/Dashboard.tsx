@@ -1,5 +1,5 @@
 import { StyledDashboardComponent, DashboardContainer, Container, RollUpButton, slideInUp, slideOutDown, ActionsSpeedDial, HeaderContainer, FullScreenButton, CategoriesContainer, rollUpColors } from "./styles"
-import { Box, Chip, SpeedDialAction, SpeedDialIcon, Tooltip, Typography, useMediaQuery, useTheme } from "@mui/material"
+import { Box, Chip, SpeedDialAction, SpeedDialIcon, TextField, Tooltip, Typography, useMediaQuery, useTheme } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 
 import FullscreenIcon from '@mui/icons-material/Fullscreen'
@@ -10,7 +10,7 @@ import NorthIcon from '@mui/icons-material/North'
 import CloseIcon from '@mui/icons-material/Close'
 import MenuIcon from '@mui/icons-material/Menu'
 
-import { CATEGORY_CHIP_MB, CATEGORY_CHIP_MR } from "../shared/components/interface/chip/category-chip/styles"
+import { CATEGORY_CHIP_MB } from "../shared/components/interface/chip/category-chip/styles"
 import { CategoryChip } from "../shared/components/interface/chip/category-chip/CategoryChip"
 import { ModalAddComponent } from "./components/modal-add-component/ModalAddComponent"
 import { DemensionsButtons } from "./parts/demensions-buttons/DemensionsButtons"
@@ -21,6 +21,8 @@ import { getContrastColor } from "../shared/utils/masks"
 import { useDrawer } from "../shared/contexts/drawer"
 import { EmptyDashboards, VIconButton } from "../shared/components"
 import { Footer } from "./parts/footer/Footer"
+import { IoMdSearch } from "react-icons/io"
+import { ModalManageComponentCategories } from "./components/modal-manage-component-categories/ModalManageComponentCategories"
 
 export const Dashboard = () => {
   const theme = useTheme()
@@ -46,10 +48,16 @@ export const Dashboard = () => {
     return (window.innerHeight * percentages.default) / 100
   }, [lgDown, mdDown, smDown])
 
+  const [searching, setSearching] = useState(false)
 
   const [openAddComponentModal, setOpenAddComponentModal] = useState(false)
   const handleChangeOpenAddComponentModal = (newValue: boolean) => {
     setOpenAddComponentModal(newValue)
+  }
+
+  const [openManageComponentsCayegories, setOpenManageComponentsCayegories] = useState(false)
+  const handleChangeOpenManageComponentsCayegories = (newValue: boolean) => {
+    setOpenManageComponentsCayegories(newValue)
   }
 
   const [openFullScreenModal, setOpenFullScreenModal] = useState<string | undefined>(undefined)
@@ -132,12 +140,55 @@ export const Dashboard = () => {
             <Tooltip title={`Gerenciar categorias de ${currentDashboard.name}`} placement="bottom-end">
               <Chip
                 size="small"
+                onClick={() => handleChangeOpenManageComponentsCayegories(true)}
                 label={
                   <Box display='flex' justifyContent='center'>
                     <SettingsIcon sx={{ fontSize: '1rem' }} />
                   </Box>
                 }
-                sx={{ mr: CATEGORY_CHIP_MR, mb: CATEGORY_CHIP_MB }}
+                sx={{ mb: CATEGORY_CHIP_MB }}
+              />
+            </Tooltip>
+
+            <ModalManageComponentCategories
+              open={openManageComponentsCayegories}
+              handleChangeOpen={handleChangeOpenManageComponentsCayegories}
+            />
+
+            <Tooltip title={`Pesquisar categorias de ${currentDashboard.name}`} placement="bottom-end">
+              <Chip
+                size="small"
+                onClick={() => !searching && setSearching(true)}
+                label={
+                  <Box display='flex' justifyContent='flex-end' gap={1} minWidth={searching ? '150px' : '16px'}>
+                    <IoMdSearch
+                      size={16}
+                      style={{ marginTop: searching ? 6.5 : 0 }}
+                      onClick={() => setSearching(false)}
+                    />
+
+                    {searching && (
+                      <TextField
+                        size="small"
+                        variant="standard"
+                        placeholder="Pesquisar..."
+                        sx={{
+                          minHeight: '2px',
+                          '& .MuiInputBase-input': {
+                            fontSize: '0.8rem',
+                            pt: '6px',
+
+                            '&::placeholder': {
+                              fontSize: '0.8rem',
+                              pt: '6px',
+                            }
+                          },
+                        }}
+                      />
+                    )}
+                  </Box>
+                }
+                sx={{ mb: CATEGORY_CHIP_MB }}
               />
             </Tooltip>
 
@@ -159,7 +210,7 @@ export const Dashboard = () => {
             <DashboardContainer
               variant="quilted"
               cols={6}
-              rowHeight={dashboardComponentHeight} /* 30vh */
+              rowHeight={dashboardComponentHeight}
             >
               {currentDashboard.components.map((component, i) => (
                 <StyledDashboardComponent

@@ -5,7 +5,7 @@ import React, {
   useEffect,
 } from 'react'
 import { createTheme, ThemeProvider } from '@mui/material'
-import { StyledThemeBoxContainer } from './styles'
+import { appColors, StyledThemeBoxContainer } from './styles'
 import { ThemeContext } from '../../contexts/theme'
 
 interface IAppThemeProviderProps {
@@ -15,27 +15,27 @@ interface IAppThemeProviderProps {
 export const AppThemeProvider: React.FC<IAppThemeProviderProps> = ({ children }) => {
   const [themeName, setThemeName] = useState<'light' | 'dark'>(() =>
     (localStorage.getItem('dashboard:theme') as 'light' | 'dark') || 'light'
-  );
+  )
 
   const [primaryColor, setPrimaryColor] = useState<string>(() =>
-    localStorage.getItem('dashboard:primaryColor') || '#0DA64F'
-  );
+    localStorage.getItem('dashboard:primaryColor') || appColors.BLUE
+  )
 
   const toggleTheme = useCallback(() => {
-    setThemeName((oldThemeName) => (oldThemeName === 'light' ? 'dark' : 'light'));
-  }, []);
+    setThemeName((oldThemeName) => (oldThemeName === 'light' ? 'dark' : 'light'))
+  }, [])
 
   const changePrimaryColor = useCallback((color: string) => {
-    setPrimaryColor(color);
-  }, []);
+    setPrimaryColor(color)
+  }, [])
 
   useEffect(() => {
-    localStorage.setItem('dashboard:theme', themeName);
-  }, [themeName]);
+    localStorage.setItem('dashboard:theme', themeName)
+  }, [themeName])
 
   useEffect(() => {
-    localStorage.setItem('dashboard:primaryColor', primaryColor);
-  }, [primaryColor]);
+    localStorage.setItem('dashboard:primaryColor', primaryColor)
+  }, [primaryColor])
 
   const theme = useMemo(() => {
     return createTheme({
@@ -60,8 +60,8 @@ export const AppThemeProvider: React.FC<IAppThemeProviderProps> = ({ children })
           color: themeName === 'light' ? '#555' : '#aaa',
         },
       },
-    });
-  }, [themeName, primaryColor]);
+    })
+  }, [themeName, primaryColor])
 
   return (
     <ThemeContext.Provider
@@ -73,5 +73,5 @@ export const AppThemeProvider: React.FC<IAppThemeProviderProps> = ({ children })
         </StyledThemeBoxContainer>
       </ThemeProvider>
     </ThemeContext.Provider>
-  );
-};
+  )
+}

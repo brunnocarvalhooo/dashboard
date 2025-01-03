@@ -31,8 +31,8 @@ export class LSDashboard implements IDashboardFactory {
       dashboards_categories,
       dashboards_categories_relation,
       components,
-      component_categories_relation,
-      component_categories
+      components_categories_relation,
+      components_categories
     } = this.storage.get()
 
     const dashboard = dashboards.find((dashboard) => dashboard.id === id_dashboard)
@@ -53,11 +53,11 @@ export class LSDashboard implements IDashboardFactory {
     const relatedComponents = components
       .filter((component) => component.id_dashboard === id_dashboard)
       .map((component) => {
-        const componentCategoryIds = component_categories_relation
+        const componentCategoryIds = components_categories_relation
           .filter((relation) => relation.id_component === component.id)
           .map((relation) => relation.id_category)
 
-        const componentCategories = component_categories.filter((category) =>
+        const componentCategories = components_categories.filter((category) =>
           componentCategoryIds.includes(category.id)
         )
 
@@ -95,7 +95,27 @@ export class LSDashboard implements IDashboardFactory {
       }
     })
   }
-  
+
+  public getCurrentDashboardComponentsCategories(id_dashboard: string) {
+    const { components_categories, components_categories_relation, components } = this.storage.get()
+
+    const dashboardComponents = components.filter(
+      (component) => component.id_dashboard === id_dashboard
+    )
+
+    const dashboardComponentIds = dashboardComponents.map((component) => component.id)
+
+    const relatedCategories = components_categories_relation
+      .filter((relation) => dashboardComponentIds.includes(relation.id_component))
+      .map((relation) => relation.id_category)
+
+    const uniqueCategories = components_categories.filter((category) =>
+      relatedCategories.includes(category.id)
+    )
+
+    return uniqueCategories
+  }
+
   public delete(id_dashboard: string) {
     const { dashboards, dashboards_categories_relation, components, ...rest } = this.storage.get()
 

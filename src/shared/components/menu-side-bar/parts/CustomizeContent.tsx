@@ -5,8 +5,8 @@ import { useState } from "react"
 import { FaCircle } from "react-icons/fa"
 import { CirclePicker } from 'react-color'
 import { StyledMenu } from "../../interface/menu/styles"
-import { rollUpColors } from "../../../../dashboard/styles"
 import { CloseIconButton } from "../../interface/icon-button/CloseIconButton"
+import { appColors } from "../../../hooks/theme/styles"
 
 export const CustomizeContent = () => {
   const { themeName, toggleTheme, primaryColor, changePrimaryColor } = useAppTheme()
@@ -77,7 +77,7 @@ export const CustomizeContent = () => {
             <CirclePicker
               color={primaryColor}
               onChange={handleColorChange}
-              colors={Object.values(rollUpColors)}
+              colors={Object.values(appColors)}
             />
 
             <CloseIconButton onClick={handleCloseSelectColor} />

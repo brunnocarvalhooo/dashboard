@@ -27,7 +27,23 @@ export interface ILSDashboardsCategories {
   id_dashboard: string
 }
 
-export interface ILSComponentCategories {
+export interface IComponentsCategoriesFactory {
+  create(
+    name: string,
+    color: string,
+    id_components: string[]
+  ): void
+  update(
+    id_category: string,
+    name: string,
+    color: string,
+    id_components: string[]
+  ): void
+  delete(id_category: string): void
+  changeActiveStatus(id_category: string): void
+}
+
+export interface ILSComponentsCategories {
   id: string
   id_category: string
   id_component: string
