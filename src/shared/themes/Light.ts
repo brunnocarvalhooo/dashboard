@@ -5,11 +5,11 @@ export const LightTheme = createTheme({
     mode: 'light',
     primary: {
       main: '#0DA64F',
-      contrastText: '#5D5D5D'
+      contrastText: '#555'
     },
     text: {
       primary: '#000',
-      secondary: '#888',
+      secondary: '#555',
     },
     background: {
       default: '#EEEEEE',
@@ -19,7 +19,7 @@ export const LightTheme = createTheme({
   typography: {
     fontFamily: 'Roboto, Arial, sans-serif',
     allVariants: {
-      color: '#5D5D5D',
+      color: '#555',
     },
   },
 })

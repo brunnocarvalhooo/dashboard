@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box'
 
-import { Collapse, Divider, IconButton, InputAdornment, List, TextField, Tooltip, Typography, useTheme } from '@mui/material'
+import { Collapse, IconButton, InputAdornment, List, TextField, Tooltip, Typography, useTheme } from '@mui/material'
 
 import { useDrawer } from '../../contexts/drawer'
 import { ChildrenContainer, DrawerContentContainer, MenuButton, StyledDrawer } from './styles'
@@ -11,7 +11,6 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import { GrConfigure } from "react-icons/gr"
 
-import { useAppTheme } from '../../contexts/theme'
 import { ModalAddDashboard } from './components/ModalAddDashboard'
 import { useMemo, useState } from 'react'
 import { getContrastColor, truncateText } from '../../utils/masks'
@@ -28,6 +27,10 @@ import { ILSDashboard } from '../../../models/dashboard.model'
 import { ICategory } from '../../dtos/categories'
 import { StyledMenu } from '../interface/menu/styles'
 import { RiColorFilterLine } from 'react-icons/ri'
+import { DashboardsCategoriesFiltersContent } from './parts/DashboardsCategoriesFiltersContent'
+import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown'
+import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp'
+import { CustomizeContent } from './parts/CustomizeContent'
 
 interface ISearchResults {
   dashboard: ILSDashboard[]
@@ -46,8 +49,6 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
 
   const theme = useTheme()
 
-  const { toggleTheme } = useAppTheme()
-
   const {
     dashboards,
     handleChangeCurrentDashboard,
@@ -56,6 +57,10 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
   } = useDashboards()
 
   const [search, setSearch] = useState('')
+  const [dashboardsFilters, setDashboardsFilters] = useState({
+    active: true,
+    inactive: true
+  })
 
   const [anchorElFilterDashboardsCategories, setAnchorElDashboardsCategories] = useState<null | HTMLElement>(null)
   const openFilterDashboardsCategories = Boolean(anchorElFilterDashboardsCategories)
@@ -66,13 +71,29 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
     setAnchorElDashboardsCategories(null)
   }
 
+  const [anchorElCustomize, setAnchorElCustomize] = useState<null | HTMLElement>(null)
+  const openCustomize = Boolean(anchorElCustomize)
+  const handleClickCustomize = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElCustomize(event.currentTarget)
+  }
+  const handleCloseCustomize = () => {
+    setAnchorElCustomize(null)
+  }
+
   const [maxVisibleCategories, setMaxVisibleCategories] = useState(10)
-  const handleChangeMaxVisibleCategories = (operation: '-' | '+') => {
+  const handleChangeMaxVisibleCategories = (operation: '-' | '--' | '+' | '++') => {
     setMaxVisibleCategories((prev) => {
-      if (operation === '+') {
-        return Math.min(prev + 10, dashboardsCategories.length)
-      } else {
-        return Math.max(prev - 10, 10)
+      switch (operation) {
+        case '+':
+          return Math.min(prev + 10, dashboardsCategories.length)
+        case '++':
+          return dashboardsCategories.length
+        case '-':
+          return Math.max(prev - 10, 10)
+        case '--':
+          return 10
+        default:
+          return prev
       }
     })
   }
@@ -122,9 +143,16 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
   }
 
   const searchResult = useMemo<ISearchResults>(() => {
-    const dashboardsCategoriesResult = dashboardsCategories.filter((category) =>
-      search ? category.name.toLowerCase().includes(search.toLowerCase()) : true
-    )
+    const dashboardsCategoriesResult = dashboardsCategories
+      .filter((category) =>
+        search ? category.name.toLowerCase().includes(search.toLowerCase()) : true
+      )
+      .filter((category) => {
+        if (dashboardsFilters.active && dashboardsFilters.inactive) return true
+        if (dashboardsFilters.active) return category.active
+        if (dashboardsFilters.inactive) return !category.active
+        return false
+      })
 
     const dashboardsResult = dashboards.filter((dashboard) =>
       search ? dashboard.name.toLowerCase().includes(search.toLowerCase()) : true
@@ -134,7 +162,7 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
       dashboard: dashboardsResult,
       dashboardsCategories: dashboardsCategoriesResult,
     }
-  }, [dashboards, dashboardsCategories, search])
+  }, [dashboards, dashboardsCategories, search, dashboardsFilters])
 
   return (
     <>
@@ -148,18 +176,39 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
             <Box display='flex' justifyContent='space-between' alignItems='center' py='8px'>
               <Tooltip title='Novo dashboard' placement='right'>
                 <VIconButton
-                  icon={<MdAddChart size={24} color={theme.palette.text.primary} />}
+                  icon={<MdAddChart size={24} color={theme.palette.text.secondary} />}
                   onClick={() => handleChangeOpenModalAddDashboard(true)} size='small'
                 />
               </Tooltip>
 
               <VIconButton
-                icon={<RiColorFilterLine size={24} color={theme.palette.text.primary} />}
-                onClick={toggleTheme} size='small'
+                id="customize-button"
+                aria-controls={openCustomize ? 'customize-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={openCustomize ? 'true' : undefined}
+                onClick={handleClickCustomize}
+                icon={<RiColorFilterLine size={24} color={theme.palette.text.secondary} />}
+                size='small'
               />
-            </Box>
 
-            <Divider sx={{ opacity: '0.4', mb: 2 }} />
+              <StyledMenu
+                id="customize-menu"
+                aria-labelledby="customize-button"
+                anchorEl={anchorElCustomize}
+                open={openCustomize}
+                onClose={handleCloseCustomize}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+              >
+                <CustomizeContent />
+              </StyledMenu>
+            </Box>
 
             <TextField
               value={search}
@@ -241,11 +290,10 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
                         horizontal: 'left',
                       }}
                     >
-                      <Box p={1}>
-                        <Typography
-                          variant='body2'
-                        >Categorias de dashboard</Typography>
-                      </Box>
+                      <DashboardsCategoriesFiltersContent
+                        dashboardsFilters={dashboardsFilters}
+                        setDashboardsFilters={setDashboardsFilters}
+                      />
                     </StyledMenu>
 
                     <Tooltip title='Gerenciar categorias de dashboard' placement='right'>
@@ -292,8 +340,8 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
                   </Box>
 
                   {searchResult.dashboardsCategories.length > 10 && (
-                    <>
-                      <Tooltip title='Mostrar menos' placement='bottom-end'>
+                    <Box mt={0.5}>
+                      <Tooltip title='Menos' placement='bottom-end'>
                         <IconButton
                           size='small'
                           disabled={maxVisibleCategories <= 10}
@@ -302,7 +350,16 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
                           <KeyboardArrowUpIcon sx={{ fontSize: '1rem' }} />
                         </IconButton>
                       </Tooltip>
-                      <Tooltip title='Mostrar mais' placement='bottom'>
+                      <Tooltip title='Mínimo' placement='bottom'>
+                        <IconButton
+                          size='small'
+                          disabled={maxVisibleCategories <= 10}
+                          onClick={() => handleChangeMaxVisibleCategories('--')}
+                        >
+                          <KeyboardDoubleArrowUpIcon sx={{ fontSize: '1rem' }} />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title='Mais' placement='bottom'>
                         <IconButton
                           size='small'
                           disabled={maxVisibleCategories >= searchResult.dashboardsCategories.length}
@@ -311,7 +368,16 @@ export const MenuSideBar: React.FC<IMenuSideBarProps> = ({ children }) => {
                           <KeyboardArrowDownIcon sx={{ fontSize: '1rem' }} />
                         </IconButton>
                       </Tooltip>
-                    </>
+                      <Tooltip title='Todos' placement='bottom'>
+                        <IconButton
+                          size='small'
+                          disabled={maxVisibleCategories >= searchResult.dashboardsCategories.length}
+                          onClick={() => handleChangeMaxVisibleCategories('++')}
+                        >
+                          <KeyboardDoubleArrowDownIcon sx={{ fontSize: '1rem' }} />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
                   )}
                 </Collapse>
               </Box>

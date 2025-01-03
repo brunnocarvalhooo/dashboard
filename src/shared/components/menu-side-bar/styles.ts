@@ -28,6 +28,10 @@ export const StyledDrawer = styled(Drawer)(({ theme }) => ({
     '&::-webkit-scrollbar-track': {
       backgroundColor: 'transparent',
     },
+
+    [theme.breakpoints.down('sm')]: {
+      width: 'calc(100vw - 88px)',
+    }
   },
 }))
 
@@ -47,6 +51,10 @@ export const MenuButton = styled(IconButton)(({ theme }) => ({
 
   '&:hover': {
     background: theme.palette.background.paper,
+  },
+
+  [theme.breakpoints.down('sm')]: {
+    left: 'calc(100vw - 80px)',
   }
 }))
 

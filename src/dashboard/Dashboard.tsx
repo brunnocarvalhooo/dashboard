@@ -1,4 +1,4 @@
-import { StyledDashboardComponent, DashboardContainer, Container, RollUpButton, slideInUp, slideOutDown, ActionsSpeedDial, HeaderContainer, FullScreenButton, CategoriesContainer } from "./styles"
+import { StyledDashboardComponent, DashboardContainer, Container, RollUpButton, slideInUp, slideOutDown, ActionsSpeedDial, HeaderContainer, FullScreenButton, CategoriesContainer, rollUpColors } from "./styles"
 import { Box, Chip, SpeedDialAction, SpeedDialIcon, Tooltip, Typography, useMediaQuery, useTheme } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 
@@ -21,14 +21,6 @@ import { getContrastColor } from "../shared/utils/masks"
 import { useDrawer } from "../shared/contexts/drawer"
 import { EmptyDashboards, VIconButton } from "../shared/components"
 import { Footer } from "./parts/footer/Footer"
-
-enum rollUpColors {
-  BLUE = '#0597F2',
-  GREEN = '#49D907',
-  YELLOW = '#e0e706',
-  RED = '#F24607',
-  PURPLE = '#970FF2',
-}
 
 export const Dashboard = () => {
   const theme = useTheme()

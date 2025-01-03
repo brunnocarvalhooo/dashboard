@@ -3,6 +3,8 @@ import { createContext, useContext } from "react"
 export interface IThemeContextData {
   themeName: 'light' | 'dark'
   toggleTheme: () => void
+  primaryColor: string
+  changePrimaryColor: (color: string) => void
 }
 
 export const ThemeContext = createContext({} as IThemeContextData)

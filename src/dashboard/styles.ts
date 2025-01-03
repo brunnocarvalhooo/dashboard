@@ -2,6 +2,14 @@ import { Box, IconButton, ImageList, ImageListItem, keyframes, SpeedDial, styled
 import { VIconButton } from "../shared/components"
 import { borderColor } from "../shared/components/interface/dialog/styles"
 
+export enum rollUpColors {
+  BLUE = '#2B76D9',
+  GREEN = '#66A3D9',
+  YELLOW = '#15402C',
+  RED = '#2A5928',
+  PURPLE = '#FF9800',
+}
+
 export const Container = styled(Box)(() => ({
   paddingTop: '84px',
   paddingInline: '4px',

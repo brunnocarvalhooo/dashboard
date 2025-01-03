@@ -5,7 +5,7 @@ export const DarkTheme = createTheme({
     mode: 'dark',
     primary: {
       main: '#0DA64F',
-      contrastText: '#bbb'
+      contrastText: '#aaa'
     },
     text: {
       primary: '#fff',
@@ -19,7 +19,7 @@ export const DarkTheme = createTheme({
   typography: {
     fontFamily: 'Nunito, Arial, sans-serif',
     allVariants: {
-      color: '#bbb',
+      color: '#aaa',
     },
   },
 })
